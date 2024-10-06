@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="admin">
+
+
+
+    <!-- Select stores for List -->
+	<select id="storeSelectList" parameterType="String" resultType="com.javaex.vo.jStoreVo">
+	    <![CDATA[
+	        select  storeNum, 
+	                storeName,
+	                storeAddress,
+	                storeNumber,
+	                storeImage
+	        from Store  
+	    ]]>
+	</select>
+	
+    <!-- Select stores for List -->
+	<select id="userSelectList" parameterType="String" resultType="com.javaex.vo.unionVo">
+	    <![CDATA[
+	        select  userNum, 
+	                userId,
+	                password,
+	                name,
+	                phoneNumber,
+	                address
+	        from user  
+	    ]]>
+	</select>
+	
+</mapper>
