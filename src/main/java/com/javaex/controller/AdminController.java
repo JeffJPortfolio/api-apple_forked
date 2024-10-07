@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,9 +17,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.javaex.service.AdminService;
 import com.javaex.util.JsonResult;
+import com.javaex.util.JwtUtil;
 import com.javaex.vo.StoreVo;
 import com.javaex.vo.jStoreVo;
 import com.javaex.vo.unionVo;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 public class AdminController {
@@ -38,7 +43,6 @@ public class AdminController {
 			return JsonResult.fail("데이터 없음");
 		}
 	}
-	
 	//상점 등록
 	@PostMapping("/api/admin/store/add")
 	public JsonResult storeAdd(@ModelAttribute StoreVo attachVo) {
@@ -53,6 +57,19 @@ public class AdminController {
 			return JsonResult.success(count);
 		}
 	}
+	//삭제
+	/*
+	 * @DeleteMapping("/api/boards/{no}") public JsonResult
+	 * delBoard(@PathVariable("no") int no) {
+	 * System.out.println("AdminController.delBoard()");
+	 * 
+	 * int count = boardService.exeDeleteBoard(no);
+	 * 
+	 * if (count != -1) { // 삭제 성공 return JsonResult.success(count); } else { // 삭제
+	 * 실패 return JsonResult.fail("삭제 실패"); } }
+	 */
+
+	
 	
 	
 	//유저
@@ -94,7 +111,7 @@ public class AdminController {
 		}
 	}
 	
-	
+	/*------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 	/* 시리즈 등록 */
 	@PostMapping("/api/add/series")
 	public JsonResult addSeries(@RequestBody unionVo unionVo) {
@@ -107,7 +124,7 @@ public class AdminController {
 		} else { // 등록 성공
 			return JsonResult.success(count);
 		}
-	}
+	} 
 	
 	/* 색상 등록 */
 	@PostMapping("/api/add/color")

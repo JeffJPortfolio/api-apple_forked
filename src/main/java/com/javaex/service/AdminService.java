@@ -120,8 +120,7 @@ public class AdminService {
 		return count; // 시간 + uuid + .jpg
 
 	}
-    
-    
+    //상점 수정
 	
 	
 	
