@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
-    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
 <mapper namespace="admin">
-
-
-
-    <!-- Select stores for List -->
+	
+	 <!-- 현오 -->
 	<select id="storeSelectList" parameterType="String" resultType="com.javaex.vo.jStoreVo">
 	    <![CDATA[
 	        select  storeNum, 
@@ -17,6 +15,14 @@
 	    ]]>
 	</select>
 	
+	<insert id="insertStore" parameterType="com.javaex.vo.StoreVo">
+	    <![CDATA[
+	        insert  Store, 
+        	INSERT INTO Series ((`storeName`, `storeAddress`, `storeNumber`, `storeImage`)
+        	VALUES (#{storeName}, #{storeAddress}, #{storeNumber}, #{storeImage})
+	    ]]>
+	</insert>
+	
     <!-- Select stores for List -->
 	<select id="userSelectList" parameterType="String" resultType="com.javaex.vo.unionVo">
 	    <![CDATA[
@@ -26,7 +32,8 @@
 	                name,
 	                phoneNumber,
 	                address
-	        from user  
+	        from user
+	        where user = '회원'  
 	    ]]>
 	</select>
 	
@@ -71,8 +78,7 @@
 			    Store ON Receipt.storeNum = Store.storeNum
 			JOIN 
 			    `User` ON Receipt.userNum = `User`.userNum
-			WHERE Receipt.shippingStatus = '배송완료';
- 
+			WHERE Receipt.shippingStatus = '배송완료'
 	    ]]>
 	</select>
 	
@@ -117,9 +123,104 @@
 			    Store ON Receipt.storeNum = Store.storeNum
 			JOIN 
 			    `User` ON Receipt.userNum = `User`.userNum
-			WHERE Receipt.shippingStatus != '배송완료';
- 
+			WHERE Receipt.shippingStatus != '배송완료'
 	    ]]>
+	</select>
+	
+	
+	
+	
+	<!-- 시리즈 등록 -->
+    <insert id="seriesInsert" parameterType="com.javaex.vo.unionVo">
+        INSERT INTO Series (seriesName)
+        VALUES (#{seriesName})
+    </insert>
+    
+    <!-- 상품 등록 -->
+    <insert id="productInsert" parameterType="com.javaex.vo.unionVo">
+        INSERT INTO Product (seriesNum, productName, mainImages)
+        VALUES (#{seriesNum}, #{productName}, #{mainImages})
+    </insert>
+	
+	<!-- 색상 등록 -->
+    <insert id="colorInsert" parameterType="com.javaex.vo.unionVo">
+        INSERT INTO Color (productNum, seriesNum, colorName, colorCode)
+        VALUES (#{productNum}, #{seriesNum}, #{colorName}, #{colorCode})
+    </insert>
+    
+    <!-- 디스플레이 등록 -->
+    <insert id="displayInsert" parameterType="com.javaex.vo.unionVo">
+        INSERT INTO Display (productNum, seriesNum, displaySize)
+        VALUES (#{productNum}, #{seriesNum}, #{displaySize})
+    </insert>
+    
+    <!-- 용량 등록 -->
+    <insert id="storageInsert" parameterType="com.javaex.vo.unionVo">
+        INSERT INTO Storage (productNum, seriesNum, storageSize)
+        VALUES (#{productNum}, #{seriesNum}, #{storageSize})
+    </insert>
+    
+    <!-- 상품상세 등록 -->
+    <insert id="productDetailInsert" parameterType="com.javaex.vo.unionVo">
+        INSERT INTO ProductDetail (seriesNum, productNum, colorNum, displayNum, storageNum, productPrice)
+        VALUES (#{seriesNum}, #{productNum}, #{colorNum}, #{displayNum}, #{storageNum}, #{productPrice})
+    </insert>
+    
+    <!-- 시리즈 가져오기 -->
+	<select id="selectSeriesList" resultType="com.javaex.vo.unionVo">
+		<![CDATA[ 
+			select seriesNum,
+				   seriesName
+			from Series
+		]]>
+	</select>
+    
+    <!-- 상품명 가져오기 -->
+	<select id="selectProductList" parameterType="int" resultType="com.javaex.vo.unionVo">
+		<![CDATA[ 
+			select seriesNum,
+				   productNum,
+				   productName
+			from Product
+			where seriesNum = #{seriesNum}
+		]]>
+	</select>
+    
+    <!-- 색상 가져오기 -->
+	<select id="selectColorList" parameterType="int" resultType="com.javaex.vo.unionVo">
+		<![CDATA[ 
+			select colorNum,
+				   productNum,
+				   seriesNum,
+				   colorName,
+				   colorCode
+			from Color
+			where seriesNum = #{seriesNum}
+		]]>
+	</select>
+	
+    <!-- 디스플레이 가져오기 -->
+	<select id="selectDisplayList" parameterType="int" resultType="com.javaex.vo.unionVo">
+		<![CDATA[ 
+			select displayNum,
+				   productNum,
+				   seriesNum,
+				   displaySize
+			from Display
+			where seriesNum = #{seriesNum}
+		]]>
+	</select>
+	
+	<!-- 용량 가져오기 -->
+	<select id="selectStroageList" parameterType="int" resultType="com.javaex.vo.unionVo">
+		<![CDATA[ 
+			select storageNum,
+				   productNum,
+				   seriesNum,
+				   storageSize
+			from Storage
+			where seriesNum = #{seriesNum}
+		]]>
 	</select>
 	
 </mapper>
