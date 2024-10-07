@@ -31,4 +31,20 @@ public class AdminService {
 
 		return userList;
 	}
+	
+	public List<unionVo> exeDeliveryList() {
+		System.out.println("AdminService.exeDeliveryList()");
+
+		List<unionVo> deliveryList = adminDao.deliverySelectList();
+
+		return deliveryList;
+	}
+	
+	public List<unionVo> exeHistoryList() {
+		System.out.println("AdminService.exeHistoryList()");
+
+		List<unionVo> historyList = adminDao.historySelectList();
+
+		return historyList;
+	}
 }

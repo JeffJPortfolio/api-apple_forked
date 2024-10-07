@@ -30,4 +30,20 @@ public class AdminDao {
 
 		return userList;
 	}
+	
+	public List<unionVo> deliverySelectList() {
+		System.out.println("AdminDao.userSelectList()");
+
+		List<unionVo> deliveryList = sqlSession.selectList("admin.userSelectList");
+
+		return deliveryList;
+	}
+	
+	public List<unionVo> historySelectList() {
+		System.out.println("AdminDao.historySelectList()");
+
+		List<unionVo> historyList = sqlSession.selectList("admin.userSelectList");
+
+		return historyList;
+	}
 }
