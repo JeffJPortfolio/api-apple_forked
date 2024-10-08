@@ -84,7 +84,7 @@ public class AdminService {
     public int  exeProductArrived(unionVo unionVo) {
 		System.out.println("AdminService.exeProductArrived");
 
-		int count = adminDao.productSend(unionVo);
+		int count = adminDao.productArrived(unionVo);
 
 		return count;
 	}

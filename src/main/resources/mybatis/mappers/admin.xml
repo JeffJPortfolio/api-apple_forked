@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
 <mapper namespace="admin">
 	
 	 <!-- 현오 -->
-	 	<select id="productSelectList" parameterType="String" resultType="com.javaex.vo.jProductVo">
+	 	<select id="productSelectList" resultType="com.javaex.vo.jProductVo">
 		    <![CDATA[
 		    	SELECT
 				    p.productNum,
@@ -38,7 +39,7 @@
 
 	 
 	 
-	<select id="storeSelectList" parameterType="String" resultType="com.javaex.vo.jStoreVo">
+	<select id="storeSelectList"  resultType="com.javaex.vo.jStoreVo">
 	    <![CDATA[
 	        select  storeNum, 
 	                storeName,
@@ -62,16 +63,9 @@
 	</update>
 	
 	
-	<insert id="insertStore" parameterType="com.javaex.vo.StoreVo">
-	    <![CDATA[
-	        insert  Store, 
-        	INSERT INTO Series ((`storeName`, `storeAddress`, `storeNumber`, `storeImage`)
-        	VALUES (#{storeName}, #{storeAddress}, #{storeNumber}, #{storeImage})
-	    ]]>
-	</insert>
 	
     <!-- Select user for List -->
-	<select id="userSelectList" parameterType="String" resultType="com.javaex.vo.unionVo">
+	<select id="userSelectList" resultType="com.javaex.vo.unionVo">
 	    <![CDATA[
 	        select  userNum, 
 	                userId,
@@ -94,58 +88,80 @@
 	    ]]>
 	</update>
 	
-<select id="deliverySelectList" parameterType="String" resultType="com.javaex.vo.unionVo">
-    <![CDATA[
-    SELECT 
-        Receipt.receiptNum,
-        History.historyNum,
-        History.productDetailNum,
-        History.productCount,
-        ProductDetail.seriesNum,
-        ProductDetail.productNum,
-        Product.productName,    -- Added productName from Product table
-        Color.colorName,
-        Display.displaySize,
-        Storage.storageSize,
-        ProductDetail.productPrice,
-        Store.storeName,
-        Store.storeNumber,
-        `User`.userId,
-        `User`.userName,         -- userName from User table
-        `User`.userAddress,      -- userAddress from User table
-        `User`.userHp,           -- userHp from User table
-        Receipt.purchasedDate,
-        Receipt.shippingAddress,
-        Receipt.shippingStatus,
-        Receipt.totalPrice,
-        productImage.imageSavedName  -- imageSavedName from productImage table
-    FROM 
-        Receipt
-    JOIN 
-        History ON Receipt.receiptNum = History.receiptNum
-    JOIN 
-        ProductDetail ON History.productDetailNum = ProductDetail.productDetailNum
-    JOIN 
-        Product ON ProductDetail.productNum = Product.productNum  -- Added join with Product table to get productName
-    JOIN 
-        Color ON ProductDetail.colorNum = Color.colorNum 
-        AND ProductDetail.seriesNum = Color.seriesNum
-    JOIN 
-        Display ON ProductDetail.displayNum = Display.displayNum 
-        AND ProductDetail.seriesNum = Display.seriesNum
-    JOIN 
-        Storage ON ProductDetail.storageNum = Storage.storageNum 
-        AND ProductDetail.seriesNum = Storage.seriesNum
-    JOIN 
-        Store ON Receipt.storeNum = Store.storeNum
-    JOIN 
-        `User` ON Receipt.userNum = `User`.userNum
-    JOIN 
-        productImage ON ProductDetail.productDetailNum = productImage.productDetailNum
-    WHERE 
-        Receipt.shippingStatus != '배송 완료'
-    ]]>
-</select>
+	<select id="deliverySelectList" resultType="com.javaex.vo.unionVo">
+	    <![CDATA[
+		SELECT 
+		    Receipt.receiptNum,
+		    History.historyNum,
+		    History.productDetailNum,
+		    History.productCount,
+		    ProductDetail.seriesNum,
+		    ProductDetail.productNum,
+		    Product.productName,    -- Added productName from Product table
+		    Color.colorName,
+		    Display.displaySize,
+		    Storage.storageSize,
+		    ProductDetail.productPrice,
+		    Store.storeName,
+		    Store.storeNumber,
+		    `User`.userId,
+		    `User`.userName,         -- userName from User table
+		    `User`.userAddress,      -- userAddress from User table
+		    `User`.userHp,           -- userHp from User table
+		    Receipt.purchasedDate,
+		    Receipt.shippingAddress,
+		    Receipt.shippingStatus,
+		    Receipt.totalPrice,
+		    MAX(productImage.imageSavedName) AS imageSavedName  -- Choose the primary or latest image
+		FROM 
+		    Receipt
+		JOIN 
+		    History ON Receipt.receiptNum = History.receiptNum
+		JOIN 
+		    ProductDetail ON History.productDetailNum = ProductDetail.productDetailNum
+		JOIN 
+		    Product ON ProductDetail.productNum = Product.productNum
+		JOIN 
+		    Color ON ProductDetail.colorNum = Color.colorNum 
+		    AND ProductDetail.seriesNum = Color.seriesNum
+		JOIN 
+		    Display ON ProductDetail.displayNum = Display.displayNum 
+		    AND ProductDetail.seriesNum = Display.seriesNum
+		JOIN 
+		    Storage ON ProductDetail.storageNum = Storage.storageNum 
+		    AND ProductDetail.seriesNum = Storage.seriesNum
+		JOIN 
+		    Store ON Receipt.storeNum = Store.storeNum
+		JOIN 
+		    `User` ON Receipt.userNum = `User`.userNum
+		LEFT JOIN 
+		    productImage ON ProductDetail.productDetailNum = productImage.productDetailNum  -- Use LEFT JOIN to allow products without images
+		WHERE 
+		    Receipt.shippingStatus != '배송 완료'
+		GROUP BY 
+		    Receipt.receiptNum,
+		    History.historyNum,
+		    History.productDetailNum,
+		    ProductDetail.seriesNum,
+		    ProductDetail.productNum,
+		    Product.productName,
+		    Color.colorName,
+		    Display.displaySize,
+		    Storage.storageSize,
+		    ProductDetail.productPrice,
+		    Store.storeName,
+		    Store.storeNumber,
+		    `User`.userId,
+		    `User`.userName,
+		    `User`.userAddress,
+		    `User`.userHp,
+		    Receipt.purchasedDate,
+		    Receipt.shippingAddress,
+		    Receipt.shippingStatus,
+		    Receipt.totalPrice
+
+	    ]]>
+	</select>
 
 	<update id="productSend" parameterType="com.javaex.vo.unionVo">
 	    <![CDATA[
@@ -168,58 +184,79 @@
 	</update>
 
 	
-<select id="historySelectList" parameterType="String" resultType="com.javaex.vo.unionVo">
-    <![CDATA[
-    SELECT 
-        Receipt.receiptNum,
-        History.historyNum,
-        History.productDetailNum,
-        History.productCount,
-        ProductDetail.seriesNum,
-        ProductDetail.productNum,
-        Product.productName,    -- Added productName from Product table
-        Color.colorName,
-        Display.displaySize,
-        Storage.storageSize,
-        ProductDetail.productPrice,
-        Store.storeName,
-        Store.storeNumber,
-        `User`.userId,
-        `User`.userName,         -- userName from User table
-        `User`.userAddress,      -- userAddress from User table
-        `User`.userHp,           -- userHp from User table
-        Receipt.purchasedDate,
-        Receipt.shippingAddress,
-        Receipt.shippingStatus,
-        Receipt.totalPrice,
-        productImage.imageSavedName  -- imageSavedName from productImage table
-    FROM 
-        Receipt
-    JOIN 
-        History ON Receipt.receiptNum = History.receiptNum
-    JOIN 
-        ProductDetail ON History.productDetailNum = ProductDetail.productDetailNum
-    JOIN 
-        Product ON ProductDetail.productNum = Product.productNum  -- Added join with Product table to get productName
-    JOIN 
-        Color ON ProductDetail.colorNum = Color.colorNum 
-        AND ProductDetail.seriesNum = Color.seriesNum
-    JOIN 
-        Display ON ProductDetail.displayNum = Display.displayNum 
-        AND ProductDetail.seriesNum = Display.seriesNum
-    JOIN 
-        Storage ON ProductDetail.storageNum = Storage.storageNum 
-        AND ProductDetail.seriesNum = Storage.seriesNum
-    JOIN 
-        Store ON Receipt.storeNum = Store.storeNum
-    JOIN 
-        `User` ON Receipt.userNum = `User`.userNum
-    JOIN 
-        productImage ON ProductDetail.productDetailNum = productImage.productDetailNum
-    WHERE 
-        Receipt.shippingStatus = '배송 완료'
-    ]]>
-</select>
+	<select id="historySelectList" parameterType="String" resultType="com.javaex.vo.unionVo">
+	    <![CDATA[
+	    SELECT 
+		    Receipt.receiptNum,
+		    History.historyNum,
+		    History.productDetailNum,
+		    History.productCount,
+		    ProductDetail.seriesNum,
+		    ProductDetail.productNum,
+		    Product.productName,    -- Added productName from Product table
+		    Color.colorName,
+		    Display.displaySize,
+		    Storage.storageSize,
+		    ProductDetail.productPrice,
+		    Store.storeName,
+		    Store.storeNumber,
+		    `User`.userId,
+		    `User`.userName,         -- userName from User table
+		    `User`.userAddress,      -- userAddress from User table
+		    `User`.userHp,           -- userHp from User table
+		    Receipt.purchasedDate,
+		    Receipt.shippingAddress,
+		    Receipt.shippingStatus,
+		    Receipt.totalPrice,
+		    MAX(productImage.imageSavedName) AS imageSavedName  -- Choose the primary or latest image
+		FROM 
+		    Receipt
+		JOIN 
+		    History ON Receipt.receiptNum = History.receiptNum
+		JOIN 
+		    ProductDetail ON History.productDetailNum = ProductDetail.productDetailNum
+		JOIN 
+		    Product ON ProductDetail.productNum = Product.productNum
+		JOIN 
+		    Color ON ProductDetail.colorNum = Color.colorNum 
+		    AND ProductDetail.seriesNum = Color.seriesNum
+		JOIN 
+		    Display ON ProductDetail.displayNum = Display.displayNum 
+		    AND ProductDetail.seriesNum = Display.seriesNum
+		JOIN 
+		    Storage ON ProductDetail.storageNum = Storage.storageNum 
+		    AND ProductDetail.seriesNum = Storage.seriesNum
+		JOIN 
+		    Store ON Receipt.storeNum = Store.storeNum
+		JOIN 
+		    `User` ON Receipt.userNum = `User`.userNum
+		LEFT JOIN 
+		    productImage ON ProductDetail.productDetailNum = productImage.productDetailNum  -- Use LEFT JOIN to allow products without images
+		WHERE 
+		    Receipt.shippingStatus = '배송 완료'
+		GROUP BY 
+		    Receipt.receiptNum,
+		    History.historyNum,
+		    History.productDetailNum,
+		    ProductDetail.seriesNum,
+		    ProductDetail.productNum,
+		    Product.productName,
+		    Color.colorName,
+		    Display.displaySize,
+		    Storage.storageSize,
+		    ProductDetail.productPrice,
+		    Store.storeName,
+		    Store.storeNumber,
+		    `User`.userId,
+		    `User`.userName,
+		    `User`.userAddress,
+		    `User`.userHp,
+		    Receipt.purchasedDate,
+		    Receipt.shippingAddress,
+		    Receipt.shippingStatus,
+		    Receipt.totalPrice
+	    ]]>
+	</select>
 
 
 	
