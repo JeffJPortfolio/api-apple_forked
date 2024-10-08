@@ -44,7 +44,7 @@ public class AdminDao {
  	}
  	
  	public List<unionVo> deliverySelectList() {
- 		System.out.println("AdminDao.userSelectList()");
+ 		System.out.println("AdminDao.deliverySelectList()");
 
  		List<unionVo> deliveryList = sqlSession.selectList("admin.deliverySelectList");
 

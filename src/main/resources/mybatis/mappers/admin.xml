@@ -40,100 +40,102 @@
 	
 	<select id="deliverySelectList" parameterType="String" resultType="com.javaex.vo.unionVo">
     <![CDATA[
-        SELECT 
-            Receipt.reciptNum,
-            History.historyNum,
-            History.productDetailNum,
-            History.productCount,
-            ProductDetail.seriesNum,
-            ProductDetail.productNum,
-            Color.colorName,
-            Display.displaySize,
-            Storage.storageSize,
-            ProductDetail.productPrice,
-            Store.storeName,
-            Store.storeNumber,
-            Receipt.userNum,
-            `User`.userName,  -- Updated as userName based on your `unionVo`
-            Receipt.userNum,
-            Receipt.purchasedDate,
-            Receipt.shippingAddress,
-            Receipt.shippingStatus,
-            Receipt.totalPrice,
-            productImage.imageSavedName  -- Added field for image
-        FROM 
-            Receipt
-        JOIN 
-            History ON Receipt.reciptNum = History.reciptNum
-        JOIN 
-            ProductDetail ON History.productDetailNum = ProductDetail.productDetailNum
-        JOIN 
-            Color ON ProductDetail.colorNum = Color.colorNum 
-            AND ProductDetail.seriesNum = Color.seriesNum
-        JOIN 
-            Display ON ProductDetail.displayNum = Display.displayNum 
-            AND ProductDetail.seriesNum = Display.seriesNum
-        JOIN 
-            Storage ON ProductDetail.storageNum = Storage.storageNum 
-            AND ProductDetail.seriesNum = Storage.seriesNum
-        JOIN 
-            Store ON Receipt.storeNum = Store.storeNum
-        JOIN 
-            `User` ON Receipt.userNum = `User`.userNum
-        JOIN 
-            productImage ON ProductDetail.productDetailNum = productImage.productDetailNum  -- Added join with productImage
-        WHERE 
-            Receipt.shippingStatus != '배송 완료'
+		SELECT 
+		    Receipt.receiptNum,
+		    History.historyNum,
+		    History.productDetailNum,
+		    History.productCount,
+		    ProductDetail.seriesNum,
+		    ProductDetail.productNum,
+		    Color.colorName,
+		    Display.displaySize,
+		    Storage.storageSize,
+		    ProductDetail.productPrice,
+		    Store.storeName,
+		    Store.storeNumber,
+		    `User`.userId,
+		    `User`.userName,         -- Updated as userName based on your `unionVo`
+		    `User`.userAddress,      -- Added userAddress
+		    `User`.userHp,           -- Added userHp
+		    Receipt.purchasedDate,
+		    Receipt.shippingAddress,
+		    Receipt.shippingStatus,
+		    Receipt.totalPrice,
+		    productImage.imageSavedName  -- Added field for image
+		FROM 
+		    Receipt
+		JOIN 
+		    History ON Receipt.receiptNum = History.receiptNum
+		JOIN 
+		    ProductDetail ON History.productDetailNum = ProductDetail.productDetailNum
+		JOIN 
+		    Color ON ProductDetail.colorNum = Color.colorNum 
+		    AND ProductDetail.seriesNum = Color.seriesNum
+		JOIN 
+		    Display ON ProductDetail.displayNum = Display.displayNum 
+		    AND ProductDetail.seriesNum = Display.seriesNum
+		JOIN 
+		    Storage ON ProductDetail.storageNum = Storage.storageNum 
+		    AND ProductDetail.seriesNum = Storage.seriesNum
+		JOIN 
+		    Store ON Receipt.storeNum = Store.storeNum
+		JOIN 
+		    `User` ON Receipt.userNum = `User`.userNum
+		JOIN 
+		    productImage ON ProductDetail.productDetailNum = productImage.productDetailNum  -- Added join with productImage
+		WHERE 
+		    Receipt.shippingStatus != '배송 완료'
     ]]>
 </select>
 
 	
 	<select id="historySelectList" parameterType="String" resultType="com.javaex.vo.unionVo">
     <![CDATA[
-        SELECT 
-            Receipt.reciptNum,
-            History.historyNum,
-            History.productDetailNum,
-            History.productCount,
-            ProductDetail.seriesNum,
-            ProductDetail.productNum,
-            Color.colorName,
-            Display.displaySize,
-            Storage.storageSize,
-            ProductDetail.productPrice,
-            Store.storeName,
-            Store.storeNumber,
-            Receipt.userNum,
-            `User`.userName,  -- Updated as userName based on your `unionVo`
-            Receipt.userNum,
-            Receipt.purchasedDate,
-            Receipt.shippingAddress,
-            Receipt.shippingStatus,
-            Receipt.totalPrice,
-            productImage.imageSavedName  -- Added field for image
-        FROM 
-            Receipt
-        JOIN 
-            History ON Receipt.reciptNum = History.reciptNum
-        JOIN 
-            ProductDetail ON History.productDetailNum = ProductDetail.productDetailNum
-        JOIN 
-            Color ON ProductDetail.colorNum = Color.colorNum 
-            AND ProductDetail.seriesNum = Color.seriesNum
-        JOIN 
-            Display ON ProductDetail.displayNum = Display.displayNum 
-            AND ProductDetail.seriesNum = Display.seriesNum
-        JOIN 
-            Storage ON ProductDetail.storageNum = Storage.storageNum 
-            AND ProductDetail.seriesNum = Storage.seriesNum
-        JOIN 
-            Store ON Receipt.storeNum = Store.storeNum
-        JOIN 
-            `User` ON Receipt.userNum = `User`.userNum
-        JOIN 
-            productImage ON ProductDetail.productDetailNum = productImage.productDetailNum  -- Added join with productImage
-        WHERE 
-            Receipt.shippingStatus = '배송 완료'
+		SELECT 
+		    Receipt.receiptNum,
+		    History.historyNum,
+		    History.productDetailNum,
+		    History.productCount,
+		    ProductDetail.seriesNum,
+		    ProductDetail.productNum,
+		    Color.colorName,
+		    Display.displaySize,
+		    Storage.storageSize,
+		    ProductDetail.productPrice,
+		    Store.storeName,
+		    Store.storeNumber,
+		    `User`.userId,
+		    `User`.userName,         -- Updated as userName based on your `unionVo`
+		    `User`.userAddress,      -- Added userAddress
+		    `User`.userHp,           -- Added userHp
+		    Receipt.purchasedDate,
+		    Receipt.shippingAddress,
+		    Receipt.shippingStatus,
+		    Receipt.totalPrice,
+		    productImage.imageSavedName  -- Added field for image
+		FROM 
+		    Receipt
+		JOIN 
+		    History ON Receipt.receiptNum = History.receiptNum
+		JOIN 
+		    ProductDetail ON History.productDetailNum = ProductDetail.productDetailNum
+		JOIN 
+		    Color ON ProductDetail.colorNum = Color.colorNum 
+		    AND ProductDetail.seriesNum = Color.seriesNum
+		JOIN 
+		    Display ON ProductDetail.displayNum = Display.displayNum 
+		    AND ProductDetail.seriesNum = Display.seriesNum
+		JOIN 
+		    Storage ON ProductDetail.storageNum = Storage.storageNum 
+		    AND ProductDetail.seriesNum = Storage.seriesNum
+		JOIN 
+		    Store ON Receipt.storeNum = Store.storeNum
+		JOIN 
+		    `User` ON Receipt.userNum = `User`.userNum
+		JOIN 
+		    productImage ON ProductDetail.productDetailNum = productImage.productDetailNum  -- Added join with productImage
+		WHERE 
+		    Receipt.shippingStatus = '배송 완료'
     ]]>
 </select>
 
