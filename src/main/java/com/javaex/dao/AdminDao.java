@@ -70,7 +70,7 @@ public class AdminDao {
  		return count;
  	}
  	
- 	
+ 	//delivery
  	public List<unionVo> deliverySelectList() {
  		System.out.println("AdminDao.deliverySelectList()");
 
@@ -78,7 +78,23 @@ public class AdminDao {
 
  		return deliveryList;
  	}
+ 	public int productSend(unionVo unionVo) {
+ 		System.out.println("AdminDao.productSend()");
+
+ 		int count = sqlSession.update("admin.productSend", unionVo);
+
+ 		return count;
+ 	}
+ 	public int productArrived(unionVo unionVo) {
+ 		System.out.println("AdminDao.productArrived()");
+
+ 		int count = sqlSession.update("admin.productArrived", unionVo);
+
+ 		return count;
+ 	}
  	
+ 	
+ 	//history
  	public List<unionVo> historySelectList() {
  		System.out.println("AdminDao.historySelectList()");
 

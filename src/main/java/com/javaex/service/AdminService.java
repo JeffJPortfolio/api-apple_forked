@@ -65,7 +65,7 @@ public class AdminService {
 		return count;
 	}
 	
-	
+	//delivery
 	public List<unionVo> exeDeliveryList() {
 		System.out.println("AdminService.exeDeliveryList()");
 
@@ -73,7 +73,24 @@ public class AdminService {
 
 		return deliveryList;
 	}
+	//배송
+    public int  exeProductSent(unionVo unionVo) {
+		System.out.println("AdminService.exeProductSent");
+
+		int count = adminDao.productSend(unionVo);
+
+		return count;
+	}
+    public int  exeProductArrived(unionVo unionVo) {
+		System.out.println("AdminService.exeProductArrived");
+
+		int count = adminDao.productSend(unionVo);
+
+		return count;
+	}
+    
 	
+	//history
 	public List<unionVo> exeHistoryList() {
 		System.out.println("AdminService.exeHistoryList()");
 
@@ -81,9 +98,6 @@ public class AdminService {
 
 		return historyList;
 	}
-	
-	
-	
 	
 	//등록
 	//상점 사진

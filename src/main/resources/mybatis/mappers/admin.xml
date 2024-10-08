@@ -147,6 +147,25 @@
     ]]>
 </select>
 
+	<update id="productSend" parameterType="com.javaex.vo.unionVo">
+	    <![CDATA[
+	    UPDATE Receipt
+	    SET
+	        shippingStatus = '배송 중'
+	    WHERE
+	        receiptNum = #{receiptNum}
+	    ]]>
+	</update>
+	
+	<update id="productArrived" parameterType="com.javaex.vo.unionVo">
+	    <![CDATA[
+	    UPDATE Receipt
+	    SET
+	        shippingStatus = '배송 완료'
+	    WHERE
+	        receiptNum = #{receiptNum}
+	    ]]>
+	</update>
 
 	
 <select id="historySelectList" parameterType="String" resultType="com.javaex.vo.unionVo">

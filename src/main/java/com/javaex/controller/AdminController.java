@@ -32,7 +32,7 @@ public class AdminController {
 	@Autowired
 	private AdminService adminService;
 	//현오
-	//product
+	//product list
 	@GetMapping("/api/admin/product")
 	public JsonResult getProductList() {
 		System.out.println("AdminController.exeProductList()");
@@ -45,7 +45,6 @@ public class AdminController {
 		}
 	}
 	
- 	//상점
 	//상점 리스트 전체
 	@GetMapping("/api/admin/store")
 	public JsonResult getStoreList() {
@@ -58,7 +57,6 @@ public class AdminController {
 			return JsonResult.fail("데이터 없음");
 		}
 	}
-	
 //	//상점 등록
 //	@PostMapping("/api/admin/store/add")
 //	public JsonResult storeAdd(@ModelAttribute StoreVo attachVo) {
@@ -73,8 +71,7 @@ public class AdminController {
 //			return JsonResult.success(count);
 //		}
 //	}
-	//삭제
-	
+	//store삭제
 	@PutMapping("/api/admin/store/{no}")
 	public JsonResult deleteStore(@PathVariable("no") int storeNum, @RequestBody StoreVo storeVo) {
 	    System.out.println("AdminController.exeDeleteStore()");
@@ -88,7 +85,6 @@ public class AdminController {
 	        return JsonResult.success(count);
 	    }
 	}
-	
 	
 	//유저
 	//유저 리스트 전체
@@ -131,6 +127,33 @@ public class AdminController {
 			return JsonResult.fail("데이터 없음");
 		}
 	}
+	@PutMapping("/api/admin/dilivery/send/{no}")
+	public JsonResult productSent(@PathVariable("no") int userNum, @RequestBody unionVo unionVo) {
+	    System.out.println("AdminController.productSent()");
+	    
+	    int count = adminService.exeProductSent(unionVo);
+
+	    if (count != 1) { // Update failed
+	        return JsonResult.fail("Update failed");
+	    } else { // Update success
+	        return JsonResult.success(count);
+	    }
+	}
+	@PutMapping("/api/admin/dilivery/arrive/{no}")
+	public JsonResult productArrived(@PathVariable("no") int userNum, @RequestBody unionVo unionVo) {
+	    System.out.println("AdminController.productArrived()");
+	    
+	    int count = adminService.exeProductArrived(unionVo);
+
+	    if (count != 1) { // Update failed
+	        return JsonResult.fail("Update failed");
+	    } else { // Update success
+	        return JsonResult.success(count);
+	    }
+	}
+	
+	
+	
 	
 	@GetMapping("/api/admin/history")
 	public JsonResult getHistoryList() {
