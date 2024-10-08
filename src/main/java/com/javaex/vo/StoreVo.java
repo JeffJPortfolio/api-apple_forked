@@ -14,13 +14,14 @@ public class StoreVo {
     private String storeNumber;
     private String storeImage;
     private String storageMapImage;
+    private String storeStatus;  // New field
 
     // Constructor
     public StoreVo() {
     }
 
     public StoreVo(int storeNum, String orgName, String saveName, MultipartFile img, String storeName,
-            String storeAddress, String storeNumber, String storeImage, String storageMapImage) {
+                   String storeAddress, String storeNumber, String storeImage, String storageMapImage, String storeStatus) {
         this.storeNum = storeNum;
         this.orgName = orgName;
         this.saveName = saveName;
@@ -30,6 +31,7 @@ public class StoreVo {
         this.storeNumber = storeNumber;
         this.storeImage = storeImage;
         this.storageMapImage = storageMapImage;
+        this.storeStatus = storeStatus;  // New field
     }
 
     // Getters and Setters
@@ -105,11 +107,19 @@ public class StoreVo {
         this.storageMapImage = storageMapImage;
     }
 
+    public String getStoreStatus() {
+        return storeStatus;
+    }
+
+    public void setStoreStatus(String storeStatus) {
+        this.storeStatus = storeStatus;
+    }
+
     // toString Method
     @Override
     public String toString() {
         return "StoreVo [storeNum=" + storeNum + ", orgName=" + orgName + ", saveName=" + saveName + ", img=" + img
                 + ", storeName=" + storeName + ", storeAddress=" + storeAddress + ", storeNumber=" + storeNumber
-                + ", storeImage=" + storeImage + ", storageMapImage=" + storageMapImage + "]";
+                + ", storeImage=" + storeImage + ", storageMapImage=" + storageMapImage + ", storeStatus=" + storeStatus + "]";
     }
 }

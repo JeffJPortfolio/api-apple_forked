@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -43,33 +44,35 @@ public class AdminController {
 			return JsonResult.fail("데이터 없음");
 		}
 	}
-	//상점 등록
-	@PostMapping("/api/admin/store/add")
-	public JsonResult storeAdd(@ModelAttribute StoreVo attachVo) {
-		System.out.println("AttachController.storeAdd()");
-		
-
-		int count = adminService.exeStoreUpload(attachVo);
-		
-		if(count != 1) {
-			return JsonResult.fail("등록에 실패했습니다.");
-		}else {
-			return JsonResult.success(count);
-		}
-	}
+//	//상점 등록
+//	@PostMapping("/api/admin/store/add")
+//	public JsonResult storeAdd(@ModelAttribute StoreVo attachVo) {
+//		System.out.println("AttachController.storeAdd()");
+//		
+//
+//		int count = adminService.exeStoreUpload(attachVo);
+//		
+//		if(count != 1) {
+//			return JsonResult.fail("등록에 실패했습니다.");
+//		}else {
+//			return JsonResult.success(count);
+//		}
+//	}
 	//삭제
-	/*
-	 * @DeleteMapping("/api/boards/{no}") public JsonResult
-	 * delBoard(@PathVariable("no") int no) {
-	 * System.out.println("AdminController.delBoard()");
-	 * 
-	 * int count = boardService.exeDeleteBoard(no);
-	 * 
-	 * if (count != -1) { // 삭제 성공 return JsonResult.success(count); } else { // 삭제
-	 * 실패 return JsonResult.fail("삭제 실패"); } }
-	 */
-
 	
+	@PutMapping("/api/admin/store/{no}")
+	public JsonResult deleteStore(@PathVariable("no") int storeNum, @RequestBody StoreVo storeVo) {
+	    System.out.println("AdminController.exeDeleteStore()");
+
+
+	    int count = adminService.exeDeleteStore(storeVo);
+
+	    if (count != 1) { // Update failed
+	        return JsonResult.fail("Update failed");
+	    } else { // Update success
+	        return JsonResult.success(count);
+	    }
+	}
 	
 	
 	//유저
@@ -85,6 +88,21 @@ public class AdminController {
 			return JsonResult.fail("데이터 없음");
 		}
 	}
+	//유저 "삭제"
+	@PutMapping("/api/admin/user/{no}")
+	public JsonResult deleteUser(@PathVariable("no") int userNum, @RequestBody unionVo unionVo) {
+	    System.out.println("AdminController.exeDeleteUser()");
+
+
+	    int count = adminService.exeDeleteUser(unionVo);
+
+	    if (count != 1) { // Update failed
+	        return JsonResult.fail("Update failed");
+	    } else { // Update success
+	        return JsonResult.success(count);
+	    }
+	}
+	
 	
 	//배송관리 리스트 전체
 	@GetMapping("/api/admin/dilivery")

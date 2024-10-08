@@ -29,6 +29,14 @@ public class AdminService {
 
 		return storeList;
 	}
+    //스토어 삭제
+    public int  exeDeleteStore(StoreVo storeVo) {
+		System.out.println("AdminService.exeDeleteStore(storeVo)");
+
+		int count = adminDao.deleteStore(storeVo);
+
+		return count;
+	}
 	
 	public List<unionVo> exeUserList() {
 		System.out.println("AdminService.exeUserList()");
@@ -37,6 +45,15 @@ public class AdminService {
 
 		return userList;
 	}
+	//유저 삭제
+    public int  exeDeleteUser(unionVo unionVo) {
+		System.out.println("AdminService.exeDeleteUser(storeVo)");
+
+		int count = adminDao.deleteUser(unionVo);
+
+		return count;
+	}
+	
 	
 	public List<unionVo> exeDeliveryList() {
 		System.out.println("AdminService.exeDeliveryList()");
@@ -53,6 +70,9 @@ public class AdminService {
 
 		return historyList;
 	}
+	
+	
+	
 	
 	//등록
 	//상점 사진

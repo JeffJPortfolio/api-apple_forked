@@ -10,11 +10,23 @@
 	                storeName,
 	                storeAddress,
 	                storeNumber,
-	                storeImage
+	                storeImage,
+	                storeStatus
 	        from Store
 	        where storeStatus != '폐업'
 	    ]]>
 	</select>
+	
+	<update id="storeDelete" parameterType="com.javaex.vo.StoreVo">
+	    <![CDATA[
+	    UPDATE Store
+	    SET
+	        storeStatus = '폐업'
+	    WHERE
+	        storeNum = #{storeNum}
+	    ]]>
+	</update>
+	
 	
 	<insert id="insertStore" parameterType="com.javaex.vo.StoreVo">
 	    <![CDATA[
@@ -24,7 +36,7 @@
 	    ]]>
 	</insert>
 	
-    <!-- Select stores for List -->
+    <!-- Select user for List -->
 	<select id="userSelectList" parameterType="String" resultType="com.javaex.vo.unionVo">
 	    <![CDATA[
 	        select  userNum, 
@@ -37,6 +49,16 @@
 	        where userStatus = '회원'  
 	    ]]>
 	</select>
+	
+	<update id="userDelete" parameterType="com.javaex.vo.unionVo">
+	   <![CDATA[
+	    UPDATE User
+	    SET
+	        userStatus = '탈퇴'
+	    WHERE
+	        userNum = #{userNum}
+	    ]]>
+	</update>
 	
 	<select id="deliverySelectList" parameterType="String" resultType="com.javaex.vo.unionVo">
     <![CDATA[

@@ -26,6 +26,14 @@ public class AdminDao {
 
  		return storeList;
  	}
+ 	//스토어 폐업처리
+ 	public int deleteStore(StoreVo storeVo) {
+ 		System.out.println("AdminDao.deleteStore()");
+
+ 		int count = sqlSession.update("admin.storeDelete", storeVo);
+
+ 		return count;
+ 	}
  	//스토어 추가
  	public int insertStore(StoreVo storeVo) {
  		System.out.println("AdminDao.insertStore()");
@@ -42,6 +50,15 @@ public class AdminDao {
 
  		return userList;
  	}
+ 	//유저 삭제
+ 	public int deleteUser(unionVo unionVo) {
+ 		System.out.println("AdminDao.deleteUser()");
+
+ 		int count = sqlSession.update("admin.userDelete", unionVo);
+
+ 		return count;
+ 	}
+ 	
  	
  	public List<unionVo> deliverySelectList() {
  		System.out.println("AdminDao.deliverySelectList()");
