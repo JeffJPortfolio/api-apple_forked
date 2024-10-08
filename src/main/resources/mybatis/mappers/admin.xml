@@ -159,7 +159,6 @@
 		    Receipt.shippingAddress,
 		    Receipt.shippingStatus,
 		    Receipt.totalPrice
-
 	    ]]>
 	</select>
 
