@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.javaex.vo.StoreVo;
+import com.javaex.vo.jProductVo;
 import com.javaex.vo.jStoreVo;
 import com.javaex.vo.unionVo;
 
@@ -19,6 +20,16 @@ public class AdminDao {
     private SqlSession sqlSession;
     //현오
  // 전체 리스트
+    //product
+ 	public List<jProductVo> productSelectList() {
+ 		System.out.println("AdminDao.productSelectList()");
+
+ 		List<jProductVo> productList = sqlSession.selectList("admin.productSelectList");
+
+ 		return productList;
+ 	}
+    
+    
  	public List<jStoreVo> storeSelectList() {
  		System.out.println("AdminDao.storeSelectList()");
 

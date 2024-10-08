@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.javaex.dao.AdminDao;
 import com.javaex.vo.StoreVo;
+import com.javaex.vo.jProductVo;
 import com.javaex.vo.jStoreVo;
 import com.javaex.vo.unionVo;
 
@@ -22,6 +23,16 @@ public class AdminService {
     @Autowired
     private AdminDao adminDao;
     //현오
+    //product
+    public List<jProductVo> exeProductList() {
+		System.out.println("AdminService.exeProductList()");
+
+		List<jProductVo> productList = adminDao.productSelectList();
+
+		return productList;
+	}
+    
+    
     public List<jStoreVo> exeStoreList() {
 		System.out.println("AdminService.exeStoreList()");
 

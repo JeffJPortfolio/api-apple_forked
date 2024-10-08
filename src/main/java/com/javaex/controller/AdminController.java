@@ -20,6 +20,7 @@ import com.javaex.service.AdminService;
 import com.javaex.util.JsonResult;
 import com.javaex.util.JwtUtil;
 import com.javaex.vo.StoreVo;
+import com.javaex.vo.jProductVo;
 import com.javaex.vo.jStoreVo;
 import com.javaex.vo.unionVo;
 
@@ -31,6 +32,19 @@ public class AdminController {
 	@Autowired
 	private AdminService adminService;
 	//현오
+	//product
+	@GetMapping("/api/admin/product")
+	public JsonResult getProductList() {
+		System.out.println("AdminController.exeProductList()");
+		List<jProductVo> productList = adminService.exeProductList();
+		
+		if(productList != null) {
+			return JsonResult.success(productList);
+		}else {
+			return JsonResult.fail("데이터 없음");
+		}
+	}
+	
  	//상점
 	//상점 리스트 전체
 	@GetMapping("/api/admin/store")
@@ -44,6 +58,7 @@ public class AdminController {
 			return JsonResult.fail("데이터 없음");
 		}
 	}
+	
 //	//상점 등록
 //	@PostMapping("/api/admin/store/add")
 //	public JsonResult storeAdd(@ModelAttribute StoreVo attachVo) {
@@ -128,6 +143,18 @@ public class AdminController {
 			return JsonResult.fail("데이터 없음");
 		}
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	/*------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 	/* 시리즈 등록 */
