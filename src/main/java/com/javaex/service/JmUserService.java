@@ -45,6 +45,8 @@ public class JmUserService {
 
 	// 장바구니 추가
 	public int exeaddToCart(unionVo unionvo) {
+		
+		//해당 유저 장바구니에 같은 상품이 있는지 체크
 		int existingCount = dao.checkCartItemExists(unionvo);
 		System.out.println("wkkdkwkdkwkdkwkfakfkasfksad");
 		if (existingCount != 0) {
@@ -86,6 +88,7 @@ public class JmUserService {
 
 	// 배송 영수증 추가 + 히스토리에 영수증 정보 추가 + 장바구니 비우기
 	public int exedeliveryInsert(unionVo unionvo) {
+		
 		// 1. 카트에서 삭제하기 전에 유저의 장바구니 목록을 가져옴
 		List<unionVo> cartItems = dao.userCartList2(unionvo.getUserNum());
 		System.out.println("히스토리에 넣을 장바구니 정보" + cartItems);
@@ -143,6 +146,28 @@ public class JmUserService {
 		System.out.println("JmUserService 결제완료" + hList);
 
 		return hList;
+	}
+
+	// 관심상품 장바구니에 담고 관심리스트 비우기
+	public int exeaaddToCartAndDel(unionVo unionvo) {
+		
+		//해당 유저 장바구니에 같은 상품이 있는지 체크
+		int existingCount = dao.checkCartItemExists(unionvo);
+		System.out.println("wkkdkwkdkwkdkwkfakfkasfksad");
+		
+		if (existingCount != 0) {
+			// 이미 존재하는 경우 업데이트
+			dao.updateCartItemCount(unionvo);
+			System.out.println("상품 있음 수량+1");
+		} else {
+			// 존재하지 않는 경우 새로 삽입
+			dao.insertCartItem(unionvo);
+			System.out.println("장바구니에 추가+1");
+		}
+		//장바구니 인서트 후 관심상품 리스트 전체 삭제
+		int cartDeleteCount = dao.deleteWish(unionvo);
+		
+		return existingCount;
 	}
 
 }

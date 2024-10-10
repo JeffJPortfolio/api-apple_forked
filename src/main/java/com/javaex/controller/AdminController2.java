@@ -48,7 +48,7 @@ public class AdminController2 {
 		}
 	}
 
-	@GetMapping("/api/admin/dilivery")
+	@GetMapping("/api/admin/delivery")
 	public JsonResult getDeliveryList() {
 		System.out.println("AdminController.exeDeliveryList()");
 		List<unionVo> deliveryList = adminService2.exeDeliveryList();
@@ -60,7 +60,7 @@ public class AdminController2 {
 		}
 	}
 
-	@PutMapping("/api/admin/dilivery/send/{no}")
+	@PutMapping("/api/admin/delivery/send/{no}")
 	public JsonResult productSent(@PathVariable("no") int userNum, @RequestBody unionVo unionVo) {
 		System.out.println("AdminController.productSent()");
 
@@ -73,7 +73,7 @@ public class AdminController2 {
 		}
 	}
 
-	@PutMapping("/api/admin/dilivery/arrive/{no}")
+	@PutMapping("/api/admin/delivery/arrive/{no}")
 	public JsonResult productArrived(@PathVariable("no") int userNum, @RequestBody unionVo unionVo) {
 		System.out.println("AdminController.productArrived()");
 

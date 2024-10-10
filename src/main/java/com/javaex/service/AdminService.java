@@ -38,8 +38,8 @@ public class AdminService {
 		// 파일 저장 경로 설정
 		String saveDir;
 		String osName = System.getProperty("os.name").toLowerCase();
-		if (osName.contains("mac")) {
-			saveDir = "/Users/yuchan";
+		if (osName.contains("linux")) {
+			saveDir = "/app/upload";
 		} else {
 			saveDir = "C:\\javaStudy\\upload";
 		}

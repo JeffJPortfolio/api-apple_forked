@@ -321,7 +321,8 @@
 			inner join display d on pd.displayNum = d.displayNum
 			inner join storage stor on pd.storageNum = stor.storageNum
 			inner join productImage img on pd.productDetailNum = img.productDetailNum
-			order by pd.productDetailNum
+            where img.imagePrimary = 1
+			order by pd.productDetailNum desc
 		]]>
 	</select>
 	
@@ -346,17 +347,17 @@
 	
 	<!-- 매장 리스트 가져오기 -->
 	<select id="storeSelectList" resultType="com.javaex.vo.StoreVo">
-    <![CDATA[
-        select  storeNum, 
-                storeName,
-                storeAddress,
-                storeNumber,
-                storeImage,
-                storeStatus
-        from Store
-        where storeStatus != '폐업'
-        and storeNum != 999
-    ]]>
+		<![CDATA[ 
+			select storeNum, 
+				   storeName, 
+				   storeAddress, 
+				   storeNumber, 
+				   storeImage, 
+				   storeStatus 
+			from Store 
+			where storeStatus != '폐업'
+			and storeNum != 999
+		]]>
 	</select>
 	
 	<!-- 매장 1개 정보 가져오기 -->

@@ -25,7 +25,6 @@ public class JmUserConteroller {
 	private JmUserService service;
 
 	
-	
 
 	// 회원 번호로 주소 가져오기
 	@GetMapping("/api/user/address")
@@ -196,6 +195,25 @@ public class JmUserConteroller {
 			return JsonResult.success(hList);
 		} else {
 			return JsonResult.fail("토큰x");
+		}
+	}
+
+	// 관심상품 장바구니에 담고 관심리스트 비우기
+	@PostMapping("api/user/wishtocart")
+	public JsonResult addToCartAndDel(@RequestBody unionVo unionvo, HttpServletRequest request) {
+		// 토큰에서 유저 정보를 가져오는 로직 (예: userNum 추출)
+		int userNum = JwtUtil.getNoFromHeader(request);
+		// cartItemVo에 유저 정보 추가
+		unionvo.setUserNum(userNum);
+		System.out.println("장바구니 정보" + unionvo);
+
+		// 서비스 호출하여 장바구니에 아이템 추가
+		int count = service.exeaaddToCartAndDel(unionvo);
+
+		if (count > 0) {
+			return JsonResult.success("장바구니에 추가되었습니다.");
+		} else {
+			return JsonResult.fail("장바구니 추가 실패");
 		}
 	}
 

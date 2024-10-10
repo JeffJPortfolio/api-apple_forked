@@ -52,6 +52,14 @@ public class JmUserDao {
 		return count;
 	}
 
+	// 관심상품 전체 삭제
+	public int deleteWish(unionVo unionvo) {
+		System.out.println("UserDao.deleteCart");
+
+		int count = session.delete("jmuser.wishDeleteAll", unionvo);
+		return count;
+	}
+
 	// ----------- 장바구니 추가 ----------------//
 
 	// 장바구니에 같은 상품이 있는지 확인
@@ -132,7 +140,7 @@ public class JmUserDao {
 		System.out.println("UserDao.historyList");
 		System.out.println(userId);
 
-		List<unionVo> hList = session.selectList("jmuser.receiptList",userId);
+		List<unionVo> hList = session.selectList("jmuser.receiptList", userId);
 		System.out.println("JmUserDao 결제완료" + hList);
 		return hList;
 	}

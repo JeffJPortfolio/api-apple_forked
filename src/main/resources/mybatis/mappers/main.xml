@@ -117,7 +117,7 @@
 			WHERE 
 			    (s.storeName LIKE CONCAT('%', #{keyword}, '%') 
 			    OR s.storeAddress LIKE CONCAT('%', #{keyword}, '%')) 
-			    AND s.storeStatus = "운영";
+			    AND s.storeStatus = "운영" and s.storeNum  != 999;
 
         ]]>
     </select>
@@ -200,14 +200,17 @@
     <!-- 추가 이미지 가져오기 -->
     <select id="getInfoImages" parameterType="int" resultType="com.javaex.vo.unionVo">
         <![CDATA[ SELECT 
-			    ii.infoImageSavedName, 
-			    ii.infoImagePrimary
-			FROM 
-			    infoImage ii
-			JOIN 
-			    ProductDetail pd ON ii.productNum = pd.productNum
-			WHERE 
-			    pd.productDetailNum = #{productDetailNum};
+				    ii.infoImageSavedName, 
+				    ii.infoImagePrimary
+				FROM 
+				    infoImage ii
+				JOIN 
+				    Product p ON ii.productNum = p.productNum
+				JOIN 
+				    ProductDetail pd ON pd.productNum = p.productNum
+				WHERE 
+				    pd.productDetailNum = #{productDetailNum};
+
 			]]>
     </select>
     
