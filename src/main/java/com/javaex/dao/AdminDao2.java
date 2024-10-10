@@ -75,5 +75,14 @@ public class AdminDao2 {
 
 		return productList;
 	}
+	
+	//-----2024/10/10
+	public StoreVo storeSelectOne(int storeNum) {
+		System.out.println("AdminDao.storeSelectOne()");
+
+		StoreVo storeVo = sqlSession.selectOne("admin.storeSelectOne", storeNum);
+
+		return storeVo;
+	}
 
 }

@@ -74,5 +74,13 @@ public class AdminService2 {
 
 		return productList;
 	}
+	
+	//-----2024/10/10
+	public StoreVo exeGetStoreSelectOne(int storeNum) {
+		System.out.println("AdminService.getStoreSelectOne()");
 
+		StoreVo storeVo = adminDao2.storeSelectOne(storeNum);
+
+		return storeVo;
+	}
 }

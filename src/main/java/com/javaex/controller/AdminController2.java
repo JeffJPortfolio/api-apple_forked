@@ -109,5 +109,21 @@ public class AdminController2 {
 			return JsonResult.fail("데이터 없음");
 		}
 	}
+	
+	
+	//-----2024/10/10
+	@GetMapping("/api/store/detail/{storeNum}")
+	public JsonResult getStoreSelectOne(@PathVariable(value = "storeNum") int storeNum) {
+		System.out.println("AdminController.getStoreSelectOne()");
+
+		StoreVo storeVo = adminService2.exeGetStoreSelectOne(storeNum);
+		
+		if (storeVo != null) {
+			return JsonResult.success(storeVo);
+		} else {
+			return JsonResult.fail("데이터 없음");
+		}
+		
+	}
 
 }
