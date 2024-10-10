@@ -4,122 +4,109 @@ import org.springframework.web.multipart.MultipartFile;
 
 public class StoreVo {
 
-    // Fields
-    private int storeNum;
-    private String orgName;
-    private String saveName;
-    private MultipartFile img;
-    private String storeName;
-    private String storeAddress;
-    private String storeNumber;
-    private String storeImage;
-    private String storageMapImage;
-    private String storeStatus;  // New field
+	private int storeNum;
+	private String storeName;
+	private String storeAddress;
+	private String storeNumber;
+	private String storeImage;
+	private String storeMapImage;
+	private MultipartFile storeFile;
+	private MultipartFile mapFile;
+	private String storeStatus;
 
-    // Constructor
-    public StoreVo() {
-    }
+	public StoreVo() {
+	}
 
-    public StoreVo(int storeNum, String orgName, String saveName, MultipartFile img, String storeName,
-                   String storeAddress, String storeNumber, String storeImage, String storageMapImage, String storeStatus) {
-        this.storeNum = storeNum;
-        this.orgName = orgName;
-        this.saveName = saveName;
-        this.img = img;
-        this.storeName = storeName;
-        this.storeAddress = storeAddress;
-        this.storeNumber = storeNumber;
-        this.storeImage = storeImage;
-        this.storageMapImage = storageMapImage;
-        this.storeStatus = storeStatus;  // New field
-    }
+	public StoreVo(int storeNum, String storeName, String storeAddress, String storeNumber, String storeImage,
+			String storeMapImage, MultipartFile storeFile, MultipartFile mapFile, String storeStatus) {
+		this.storeNum = storeNum;
+		this.storeName = storeName;
+		this.storeAddress = storeAddress;
+		this.storeNumber = storeNumber;
+		this.storeImage = storeImage;
+		this.storeMapImage = storeMapImage;
+		this.storeFile = storeFile;
+		this.mapFile = mapFile;
+		this.storeStatus = storeStatus;
+	}
 
-    // Getters and Setters
-    public int getStoreNum() {
-        return storeNum;
-    }
+	public int getStoreNum() {
+		return storeNum;
+	}
 
-    public void setStoreNum(int storeNum) {
-        this.storeNum = storeNum;
-    }
+	public void setStoreNum(int storeNum) {
+		this.storeNum = storeNum;
+	}
 
-    public String getOrgName() {
-        return orgName;
-    }
+	public String getStoreName() {
+		return storeName;
+	}
 
-    public void setOrgName(String orgName) {
-        this.orgName = orgName;
-    }
+	public void setStoreName(String storeName) {
+		this.storeName = storeName;
+	}
 
-    public String getSaveName() {
-        return saveName;
-    }
+	public String getStoreAddress() {
+		return storeAddress;
+	}
 
-    public void setSaveName(String saveName) {
-        this.saveName = saveName;
-    }
+	public void setStoreAddress(String storeAddress) {
+		this.storeAddress = storeAddress;
+	}
 
-    public MultipartFile getImg() {
-        return img;
-    }
+	public String getStoreNumber() {
+		return storeNumber;
+	}
 
-    public void setImg(MultipartFile img) {
-        this.img = img;
-    }
+	public void setStoreNumber(String storeNumber) {
+		this.storeNumber = storeNumber;
+	}
 
-    public String getStoreName() {
-        return storeName;
-    }
+	public String getStoreImage() {
+		return storeImage;
+	}
 
-    public void setStoreName(String storeName) {
-        this.storeName = storeName;
-    }
+	public void setStoreImage(String storeImage) {
+		this.storeImage = storeImage;
+	}
 
-    public String getStoreAddress() {
-        return storeAddress;
-    }
+	public String getStoreMapImage() {
+		return storeMapImage;
+	}
 
-    public void setStoreAddress(String storeAddress) {
-        this.storeAddress = storeAddress;
-    }
+	public void setStoreMapImage(String storeMapImage) {
+		this.storeMapImage = storeMapImage;
+	}
 
-    public String getStoreNumber() {
-        return storeNumber;
-    }
+	public MultipartFile getStoreFile() {
+		return storeFile;
+	}
 
-    public void setStoreNumber(String storeNumber) {
-        this.storeNumber = storeNumber;
-    }
+	public void setStoreFile(MultipartFile storeFile) {
+		this.storeFile = storeFile;
+	}
 
-    public String getStoreImage() {
-        return storeImage;
-    }
+	public MultipartFile getMapFile() {
+		return mapFile;
+	}
 
-    public void setStoreImage(String storeImage) {
-        this.storeImage = storeImage;
-    }
+	public void setMapFile(MultipartFile mapFile) {
+		this.mapFile = mapFile;
+	}
 
-    public String getStorageMapImage() {
-        return storageMapImage;
-    }
+	public String getStoreStatus() {
+		return storeStatus;
+	}
 
-    public void setStorageMapImage(String storageMapImage) {
-        this.storageMapImage = storageMapImage;
-    }
+	public void setStoreStatus(String storeStatus) {
+		this.storeStatus = storeStatus;
+	}
 
-    public String getStoreStatus() {
-        return storeStatus;
-    }
+	@Override
+	public String toString() {
+		return "StoreVo [storeNum=" + storeNum + ", storeName=" + storeName + ", storeAddress=" + storeAddress
+				+ ", storeNumber=" + storeNumber + ", storeImage=" + storeImage + ", storeMapImage=" + storeMapImage
+				+ ", storeFile=" + storeFile + ", mapFile=" + mapFile + ", storeStatus=" + storeStatus + "]";
+	}
 
-    public void setStoreStatus(String storeStatus) {
-        this.storeStatus = storeStatus;
-    }
-
-    // toString Method
-    @Override
-    public String toString() {
-        return "StoreVo [storeNum=" + storeNum + ", orgName=" + orgName + ", saveName=" + saveName + ", img=" + img
-                + ", storeName=" + storeName + ", storeAddress=" + storeAddress + ", storeNumber=" + storeNumber
-                + ", storeImage=" + storeImage + ", storageMapImage=" + storageMapImage + ", storeStatus=" + storeStatus + "]";
-    }
 }

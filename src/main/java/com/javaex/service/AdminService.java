@@ -12,43 +12,444 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.javaex.dao.AdminDao;
+import com.javaex.vo.ProductDetailVo;
 import com.javaex.vo.StoreVo;
-import com.javaex.vo.jProductVo;
-import com.javaex.vo.jStoreVo;
 import com.javaex.vo.unionVo;
 
 @Service
 public class AdminService {
 
-    @Autowired
-    private AdminDao adminDao;
-    //현오
-    //product
-    public List<jProductVo> exeProductList() {
-		System.out.println("AdminService.exeProductList()");
+	@Autowired
+	private AdminDao adminDao;
 
-		List<jProductVo> productList = adminDao.productSelectList();
+	/* 시리즈 등록 */
+	public int exeAddSeries(unionVo unionVo) {
+		System.out.println("AdminService.exeAddSeries()");
 
-		return productList;
-	}
-    
-    
-    public List<jStoreVo> exeStoreList() {
-		System.out.println("AdminService.exeStoreList()");
-
-		List<jStoreVo> storeList = adminDao.storeSelectList();
-
-		return storeList;
-	}
-    //스토어 삭제
-    public int  exeDeleteStore(StoreVo storeVo) {
-		System.out.println("AdminService.exeDeleteStore(storeVo)");
-
-		int count = adminDao.deleteStore(storeVo);
+		int count = adminDao.insertSeries(unionVo);
 
 		return count;
 	}
-	
+
+	/* 파일 저장 후 파일명 반환 */
+	public String exeUpload(MultipartFile file) {
+		System.out.println("AdminService.exeUpload()");
+
+		// 파일 저장 경로 설정
+		String saveDir;
+		String osName = System.getProperty("os.name").toLowerCase();
+		if (osName.contains("mac")) {
+			saveDir = "/Users/yuchan";
+		} else {
+			saveDir = "C:\\javaStudy\\upload";
+		}
+
+		// 오리지널 파일명
+		String orgName = file.getOriginalFilename();
+		System.out.println("Original File Name: " + orgName);
+
+		// 확장자 추출
+		String exeName = orgName.substring(orgName.lastIndexOf("."));
+		System.out.println("Extension: " + exeName);
+
+		// 저장 파일명 (UUID로 중복 방지)
+		String saveName = System.currentTimeMillis() + UUID.randomUUID().toString() + exeName;
+		System.out.println("Save Name: " + saveName);
+
+		// 파일 전체 경로 + 파일명
+		String filePath = saveDir + File.separator + saveName;
+		System.out.println("File Path: " + filePath);
+
+		// 파일을 실제로 디스크에 저장
+		try {
+			byte[] fileData = file.getBytes();
+			OutputStream os = new FileOutputStream(filePath);
+			BufferedOutputStream bos = new BufferedOutputStream(os);
+			bos.write(fileData);
+			bos.close();
+		} catch (Exception e) {
+			System.out.println("파일 저장 중 오류: " + e.getMessage());
+			return null;
+		}
+
+		// 저장된 파일명 반환
+		return saveName;
+	}
+
+	/* 상품 + 본문 이미지 등록 */
+	public int exeAddProductWithImages(unionVo unionVo, List<MultipartFile> files) {
+		// Step 1: Product 테이블에 상품 정보 삽입 (자동 생성된 productNum이 unionVo에 설정됨)
+		int productNum = adminDao.insertProduct(unionVo);
+
+		// Step 2: InfoImage 테이블에 파일 정보 삽입
+		int fileCount = 0;
+		for (int i = 0; i < files.size(); i++) {
+			MultipartFile file = files.get(i);
+			if (!file.isEmpty()) {
+				// 파일 저장 후 저장된 파일명 반환
+				String savedFileName = exeUpload(file);
+
+				if (savedFileName != null) {
+					// unionVo에 저장된 파일명 및 이미지 순서 설정
+					unionVo.setProductNum(productNum); // 새로 생성된 productNum 설정
+					unionVo.setInfoImageSavedName(savedFileName);
+					unionVo.setInfoImagePrimary(i + 1); // 이미지 순서 설정
+					adminDao.insertImageInfo(unionVo); // 이미지 정보 삽입
+					fileCount++;
+				}
+			}
+		}
+		return fileCount; // 성공적으로 처리된 파일 수 반환
+	}
+
+	/* 상세 정보 + 상세 이미지 등록 */
+	public int exeAddDetailWithImages(unionVo unionVo, List<MultipartFile> files) {
+		// Step 1: Product 테이블에 상품 정보 삽입 (자동 생성된 productNum이 unionVo에 설정됨)
+		int productDetailNum = adminDao.insertDetail(unionVo);
+
+		// Step 2: productImage 테이블에 파일 정보 삽입
+		int fileCount = 0;
+		for (int i = 0; i < files.size(); i++) {
+			MultipartFile file = files.get(i);
+			if (!file.isEmpty()) {
+				// 파일 저장 후 저장된 파일명 반환
+				String savedFileName = exeUpload(file);
+
+				if (savedFileName != null) {
+					// unionVo에 저장된 파일명 및 이미지 순서 설정
+					unionVo.setProductDetailNum(productDetailNum); // 새로 생성된 productDetailNum 설정
+					unionVo.setImageSavedName(savedFileName);
+					unionVo.setImagePrimary(i + 1); // 이미지 순서 설정
+					adminDao.insertDetailImage(unionVo); // 이미지 정보 삽입
+					fileCount++;
+				}
+			}
+		}
+		return fileCount; // 성공적으로 처리된 파일 수 반환
+	}
+
+	/* 색상 등록 */
+	public int exeAddColor(unionVo unionVo) {
+		System.out.println("AdminService.exeAddColor()");
+
+		int count = adminDao.insertColor(unionVo);
+
+		return count;
+	}
+
+	/* 디스플레이 등록 */
+	public int exeAddDisplay(unionVo unionVo) {
+		System.out.println("AdminService.exeAddDisplay()");
+
+		int count = adminDao.insertDisplay(unionVo);
+
+		return count;
+	}
+
+	/* 용량 등록 */
+	public int exeAddStorage(unionVo unionVo) {
+		System.out.println("AdminService.exeAddStorage()");
+
+		int count = adminDao.insertStorage(unionVo);
+
+		return count;
+	}
+
+	/* 시리즈 가져오기 */
+	public List<unionVo> exeGetSeriesList() {
+		System.out.println("AdminService.exeGetSeriesList()");
+
+		List<unionVo> seriesList = adminDao.getSeriesList();
+		return seriesList;
+	}
+
+	/* 상품명 가져오기 */
+	public List<unionVo> exeGetProductList(int seriesNum) {
+		System.out.println("AdminService.exeGetProductList()");
+
+		List<unionVo> productList = adminDao.getProductList(seriesNum);
+
+		return productList;
+	}
+
+	/* 색상 가져오기 */
+	public List<unionVo> exeGetColorList(int seriesNum, int productNum) {
+	    System.out.println("AdminService.exeGetColorList()");
+
+	    // unionVo 객체에 seriesNum과 productNum을 담아 DAO로 전달
+	    unionVo unionVo = new unionVo();
+	    unionVo.setSeriesNum(seriesNum);
+	    unionVo.setProductNum(productNum);
+
+	    List<unionVo> colorList = adminDao.getColorList(unionVo);
+
+	    return colorList;
+	}
+
+	/* 디스플레이 가져오기 */
+	public List<unionVo> exeGetDisplayList(int seriesNum, int productNum) {
+	    System.out.println("AdminService.exeGetDisplayList()");
+
+	    // unionVo 객체에 seriesNum과 productNum을 담아 DAO로 전달
+	    unionVo unionVo = new unionVo();
+	    unionVo.setSeriesNum(seriesNum);
+	    unionVo.setProductNum(productNum);
+
+	    List<unionVo> displayList = adminDao.getDisplayList(unionVo);
+
+	    return displayList;
+	}
+
+	/* 용량 가져오기 */
+	public List<unionVo> exeGetStorageList(int seriesNum, int productNum) {
+	    System.out.println("AdminService.exeGetStorageList()");
+
+	    // unionVo 객체에 seriesNum과 productNum을 담아 DAO로 전달
+	    unionVo unionVo = new unionVo();
+	    unionVo.setSeriesNum(seriesNum);
+	    unionVo.setProductNum(productNum);
+
+	    List<unionVo> storageList = adminDao.getStorageList(unionVo);
+
+	    return storageList;
+	}
+
+	/* 상품 가져오기2 */
+	public List<unionVo> exeGetProductList2(int seriesNum) {
+		System.out.println("AdminService.exeGetProductList2()");
+
+		List<unionVo> productList = adminDao.getProductList2(seriesNum);
+
+		return productList;
+	}
+
+	/* 색상 가져오기2 */
+	public List<unionVo> exeGetColorList2(int seriesNum) {
+		System.out.println("AdminService.exeGetColorList2()");
+
+		List<unionVo> colorList = adminDao.getColorList2(seriesNum);
+
+		return colorList;
+	}
+
+	/* 디스플레이 가져오기2 */
+	public List<unionVo> exeGetDisplayList2(int seriesNum) {
+		System.out.println("AdminService.exeGetDisplayList2()");
+
+		List<unionVo> displayList = adminDao.getDisplayList2(seriesNum);
+
+		return displayList;
+	}
+
+	/* 용량 가져오기2 */
+	public List<unionVo> exeGetStorageList2(int seriesNum) {
+		System.out.println("AdminService.exeGetStorageList2()");
+
+		List<unionVo> storageList = adminDao.getStorageList2(seriesNum);
+
+		return storageList;
+	}
+
+	/* 상품상세 정보 가져오기 */
+	public List<unionVo> exeGetProductDetail(int seriesNum) {
+		System.out.println("AdminService.exeGetProductDetail()");
+
+		List<unionVo> productDetailList = adminDao.getProductDetail(seriesNum);
+
+		return productDetailList;
+	}
+
+	/* Product 테이블에서 seriesNum이 있는지 확인 */
+	public boolean checkProduct(int seriesNum) {
+
+		int count = adminDao.existsInProduct(seriesNum);
+
+		return count > 0;
+	}
+
+	/* 시리즈 삭제 */
+	public int exDeleteSeries(int seriesNum) {
+		System.out.println("AdminController.exDeleteSeries()");
+
+		int count = adminDao.deleteSeries(seriesNum);
+
+		return count;
+	}
+
+	/* Color 테이블에서 productNum이 있는지 확인 */
+	public boolean checkColor(int productNum) {
+		int count = adminDao.existsInColor(productNum);
+		return count > 0;
+	}
+
+	/* Display 테이블에서 productNum이 있는지 확인 */
+	public boolean checkDisplay(int productNum) {
+		int count = adminDao.existsInDisplay(productNum);
+		return count > 0;
+	}
+
+	/* Storage 테이블에서 productNum이 있는지 확인 */
+	public boolean checkStorage(int productNum) {
+		int count = adminDao.existsInStorage(productNum);
+		return count > 0;
+	}
+
+	/* 상품 삭제 */
+	public int exDeleteProduct(int productNum) {
+		System.out.println("AdminController.exDeleteProduct()");
+
+		int count = adminDao.deleteProduct(productNum);
+
+		return count;
+	}
+
+	/* ProductDetail 테이블에서 colorNum이 있는지 확인 */
+	public boolean checkProductDetailColor(int colorNum) {
+		int count = adminDao.existsInProductDetailColor(colorNum);
+
+		return count > 0;
+	}
+
+	/* 색상 삭제 */
+	public int exDeleteColor(int colorNum) {
+		System.out.println("AdminController.exDeleteColor()");
+
+		int count = adminDao.deleteColor(colorNum);
+
+		return count;
+	}
+
+	/* ProductDetail 테이블에서 displayNum이 있는지 확인 */
+	public boolean checkProductDetailDisplay(int displayNum) {
+		int count = adminDao.existsInProductDetailDisplay(displayNum);
+
+		return count > 0;
+	}
+
+	/* 디스플레이 삭제 */
+	public int exDeleteDisplay(int displaynum) {
+		System.out.println("AdminController.exDeleteDisplay()");
+
+		int count = adminDao.deleteDisplay(displaynum);
+
+		return count;
+	}
+
+	/* ProductDetail 테이블에서 storageNum이 있는지 확인 */
+	public boolean checkProductDetailStorage(int storageNum) {
+		int count = adminDao.existsInProductDetailStorage(storageNum);
+
+		return count > 0;
+	}
+
+	/* 용량 삭제 */
+	public int exDeleteStorage(int storageNum) {
+		System.out.println("AdminController.exDeleteStorage()");
+
+		int count = adminDao.deleteStorage(storageNum);
+
+		return count;
+	}
+
+	/* 상품 상세정보 삭제 */
+	public int exDeleteProductDetail(int productDetailNum) {
+		System.out.println("AdminController.exDeleteProductDetail()");
+
+		// productImage 테이블에서 해당 productDetailNum을 가진 데이터 삭제
+		adminDao.deleteProductImage(productDetailNum);
+
+		int count = adminDao.deleteProductDetail(productDetailNum);
+
+		return count;
+	}
+
+	// 매장 등록
+	public int exeAddStore(StoreVo storeVo) {
+
+		// 매장 이미지 처리
+		if (storeVo.getStoreFile() != null && !storeVo.getStoreFile().isEmpty()) {
+			String storeImgName = exeUpload(storeVo.getStoreFile()); // 파일 저장 후 저장된 파일명 반환
+			storeVo.setStoreImage(storeImgName); // 파일 이름을 Vo에 저장
+		}
+
+		// 지도 이미지 처리
+		if (storeVo.getMapFile() != null && !storeVo.getMapFile().isEmpty()) {
+			String mapImgName = exeUpload(storeVo.getMapFile()); // 파일 저장 후 저장된 파일명 반환
+			storeVo.setStoreMapImage(mapImgName); // 파일 이름을 Vo에 저장
+		}
+
+		// DB에 매장 정보 저장
+		int count = adminDao.insertStore(storeVo);
+
+		return count;
+	}
+
+	/* 상품 리스트 모두 가져오기 */
+	public List<ProductDetailVo> exeGetProductListAll() {
+		System.out.println("AdminService.exeGetProductListAll()");
+
+		List<ProductDetailVo> productListAll = adminDao.getProductListAll();
+		return productListAll;
+	}
+
+	/* 상품 리스트에서 상품디테일번호 확인하고 삭제하기 */
+	// History 테이블에서 productDetailNum이 있는지 확인
+	public boolean checkHistory(int productDetailNum) {
+		// adminDao의 existsInHistory 메소드를 통해 확인
+		int count = adminDao.existsInHistory(productDetailNum);
+		return count > 0; // 결과가 0보다 크면 History에 존재하는 것으로 처리
+	}
+
+	/* 상품리스트에서 삭제 */
+	public int deleteProductList(int productDetailNum) {
+		// productImage 테이블에서 해당 productDetailNum을 가진 데이터 삭제
+		adminDao.deleteProductImage(productDetailNum);
+
+		int count = adminDao.deleteProductList(productDetailNum);
+
+		return count;
+	}
+
+	/* 매장 리스트 가져오기 */
+	public List<StoreVo> exeStoreList() {
+		System.out.println("AdminService.exeStoreList()");
+
+		List<StoreVo> storeList = adminDao.storeSelectList();
+
+		return storeList;
+	}
+
+	/* 매장 1개 정보 가져오기 */
+	public StoreVo exeGetStoreSelectOne(int storeNum) {
+		System.out.println("AdminService.getStoreSelectOne()");
+
+		StoreVo storeVo = adminDao.storeSelectOne(storeNum);
+
+		return storeVo;
+	}
+
+	/* 매장 수정하기 */
+	public int exeModifyStore(StoreVo storeVo) {
+		System.out.println("UserService.exeModifyStore()");
+
+		// 매장 이미지 처리
+		if (storeVo.getStoreFile() != null && !storeVo.getStoreFile().isEmpty()) {
+			String storeImgName = exeUpload(storeVo.getStoreFile()); // 파일 저장 후 저장된 파일명 반환
+			storeVo.setStoreImage(storeImgName); // 파일 이름을 Vo에 저장
+		}
+
+		// 지도 이미지 처리
+		if (storeVo.getMapFile() != null && !storeVo.getMapFile().isEmpty()) {
+			String mapImgName = exeUpload(storeVo.getMapFile()); // 파일 저장 후 저장된 파일명 반환
+			storeVo.setStoreMapImage(mapImgName); // 파일 이름을 Vo에 저장
+		}
+
+		int count = adminDao.modifyStore(storeVo);
+
+		return count;
+	}
+
+	/* 회원 리스트 가져오기 */
 	public List<unionVo> exeUserList() {
 		System.out.println("AdminService.exeUserList()");
 
@@ -56,263 +457,21 @@ public class AdminService {
 
 		return userList;
 	}
-	//유저 삭제
-    public int  exeDeleteUser(unionVo unionVo) {
-		System.out.println("AdminService.exeDeleteUser(storeVo)");
+	
+	/* 회원 1명 정보 가져오기 */
+	public unionVo getStoreSelectOne(int userNum) {
+		System.out.println("AdminService.getUserSelectOne()");
 
-		int count = adminDao.deleteUser(unionVo);
+		unionVo userList = adminDao.userSelectOne(userNum);
 
-		return count;
+		return userList;
 	}
 	
-	//delivery
-	public List<unionVo> exeDeliveryList() {
-		System.out.println("AdminService.exeDeliveryList()");
-
-		List<unionVo> deliveryList = adminDao.deliverySelectList();
-
-		return deliveryList;
-	}
-	//배송
-    public int  exeProductSent(unionVo unionVo) {
-		System.out.println("AdminService.exeProductSent");
-
-		int count = adminDao.productSend(unionVo);
-
-		return count;
-	}
-    public int  exeProductArrived(unionVo unionVo) {
-		System.out.println("AdminService.exeProductArrived");
-
-		int count = adminDao.productArrived(unionVo);
-
-		return count;
-	}
-    
-	
-	//history
-	public List<unionVo> exeHistoryList() {
-		System.out.println("AdminService.exeHistoryList()");
-
-		List<unionVo> historyList = adminDao.historySelectList();
-
-		return historyList;
-	}
-	
-	//등록
-	//상점 사진
-	public int exeStoreUpload(StoreVo attachVo) {
-		System.out.println("AttachService.upload()");
-
-		MultipartFile  file = attachVo.getImg();
-
-		// 파일저장 경로 변수
-		String saveDir;
-
-		String osName = System.getProperty("os.name").toLowerCase();
-
-		// 사진에 기본정보로 우리가 관리할 정보를 뽑아내야한다 --> db저장
-		// 파일 저장 폴더
-		if (osName.contains("linux")) {
-			System.out.println("리눅스");
-			//saveDir = "/home/ec2-user/upload"; // 아래에서 File.separator로 os를 판단해서 \\인지 /인지 넣어주기때문에 끝에 /를 넣을 필요가 없음
-			saveDir = "/app/upload";
-		} else {
-			System.out.println("윈도우");
-			saveDir = "C:\\javaStudy\\upload";
-		}
-
-		// 오리지널 파일명
-		String orgName = file.getOriginalFilename();
-		System.out.println("orgName: " + orgName);
-
-		// 확장자
-		String exeName = orgName.substring(orgName.lastIndexOf("."));
-		System.out.println("exeName: " + exeName);
-
-
-		// 저장파일명(겹치지 않아야 한다)
-		String saveName = System.currentTimeMillis() + UUID.randomUUID().toString() + exeName;
-		System.out.println("saveName: " + saveName);
-
-		String filePath = saveDir + File.separator + saveName; // os를 판단해서 \\인지 /인지 넣어줌
-		System.out.println("filePath: " + filePath);
-
-		// (1) DB 저장
-		// (1-1) 데이터 묶기
-		
-		attachVo.setStoreImage(saveName);
-
-
-		System.out.println("StoreVo: " + attachVo);
-
-		int count = adminDao.insertStore(attachVo);
-
-		// 사진을 서버의 하드디스크에 복사해야된다
-		// 파일 저장
-		try {
-			byte[] fileData = file.getBytes();
-			OutputStream os = new FileOutputStream(filePath);
-			BufferedOutputStream bos = new BufferedOutputStream(os);
-
-			bos.write(fileData);
-			bos.close();
-
-		} catch (Exception e) {
-			System.out.println(e.toString());
-		}
-
-		return count; // 시간 + uuid + .jpg
-
-	}
-    //상점 수정
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	 /*-------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
-	   
-    /* 시리즈 등록 */
-    public int exeAddSeries(unionVo unionVo) {
-		System.out.println("AdminService.exeAddSeries()");
-		
-		int count = adminDao.insertSeries(unionVo);
+	/* 회원정보 수정하기 */
+	public int exeModifyUser(unionVo unionVo) {
+		System.out.println("AdminService.exeModifyUser()");
+		int count = adminDao.modifyUser(unionVo);
 		
 		return count;
-	}
-    
-    /* 상품 등록 */
-    public int exeAddProduct(unionVo unionVo) {
-        System.out.println("AdminService.exeAddProduct()");
-
-        // 제품 등록 로직
-        return adminDao.insertProduct(unionVo);
-    }
-    
-    /* 색상 등록 */
-    public int exeAddColor(unionVo unionVo) {
-		System.out.println("AdminService.exeAddColor()");
-		
-		int count = adminDao.insertColor(unionVo);
-		
-		return count;
-	}
-    
-    /* 디스플레이 등록 */
-    public int exeAddDisplay(unionVo unionVo) {
-		System.out.println("AdminService.exeAddDisplay()");
-		
-		int count = adminDao.insertDisplay(unionVo);
-		
-		return count;
-	}
-    
-    /* 용량 등록 */
-    public int exeAddStorage(unionVo unionVo) {
-		System.out.println("AdminService.exeAddStorage()");
-		
-		int count = adminDao.insertStorage(unionVo);
-		
-		return count;
-	}
-    
-    /* 파일 저장 후 파일명 반환 */
-    public String exeUpload(MultipartFile file) {
-        System.out.println("AdminService.exeUpload()");
-
-        // 파일 저장 경로 설정
-        String saveDir;
-        String osName = System.getProperty("os.name").toLowerCase();
-        if (osName.contains("linux")) {
-            saveDir = "/app/upload";
-        } else {
-            saveDir = "C:\\javaStudy\\upload";
-        }
-
-        // 오리지널 파일명
-        String orgName = file.getOriginalFilename();
-        System.out.println("Original File Name: " + orgName);
-
-        // 확장자 추출
-        String exeName = orgName.substring(orgName.lastIndexOf("."));
-        System.out.println("Extension: " + exeName);
-
-        // 저장 파일명 (UUID로 중복 방지)
-        String saveName = System.currentTimeMillis() + UUID.randomUUID().toString() + exeName;
-        System.out.println("Save Name: " + saveName);
-
-        // 파일 전체 경로 + 파일명
-        String filePath = saveDir + File.separator + saveName;
-        System.out.println("File Path: " + filePath);
-
-        // 파일을 실제로 디스크에 저장
-        try {
-            byte[] fileData = file.getBytes();
-            OutputStream os = new FileOutputStream(filePath);
-            BufferedOutputStream bos = new BufferedOutputStream(os);
-            bos.write(fileData);
-            bos.close();
-        } catch (Exception e) {
-            System.out.println("파일 저장 중 오류: " + e.getMessage());
-            return null;
-        }
-
-        // 저장된 파일명 반환
-        return orgName;
-    }
-    
-    /* 시리즈 가져오기 */
-    public List<unionVo> exeGetSeriesList() {
-		System.out.println("AdminService.exeGetSeriesList()");
-		
-		List<unionVo> seriesList = adminDao.getSeriesList();
-		System.out.println(seriesList);
-		return seriesList;
-	}
-    
-    /* 상품명 가져오기 */
-    public List<unionVo> exeGetProductList(int seriesNum) {
-		System.out.println("AdminService.exeGetProductList()");
-		
-		List<unionVo> productList = adminDao.getProductList(seriesNum);
-		
-		return productList;
-	}
-    
-    /* 색싱 가져오기 */
-    public List<unionVo> exeGetColorList(int seriesNum) {
-		System.out.println("AdminService.exeGetColorList()");
-		
-		List<unionVo> colorList = adminDao.getColorList(seriesNum);
-		
-		return colorList;
-	}
-    
-    /* 디스플레이 가져오기 */
-    public List<unionVo> exeGetDisplayList(int seriesNum) {
-		System.out.println("AdminService.exeGetDisplayList()");
-		
-		List<unionVo> displayList = adminDao.getDisplayList(seriesNum);
-		
-		return displayList;
-	}
-    
-    /* 용량 가져오기 */
-    public List<unionVo> exeGetStorageList(int seriesNum) {
-		System.out.println("AdminService.exeGetStorageList()");
-		
-		List<unionVo> storageList = adminDao.getStorageList(seriesNum);
-		
-		return storageList;
 	}
 }
