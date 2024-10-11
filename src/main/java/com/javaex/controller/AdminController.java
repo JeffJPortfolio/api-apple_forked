@@ -23,9 +23,9 @@ import com.javaex.vo.unionVo;
 @RestController
 public class AdminController {
 
-	@Autowired
+	@Autowired 
 	private AdminService adminService;
-
+ 
 	/* 시리즈 등록 */
 	@PostMapping("/api/add/series")
 	public JsonResult addSeries(@RequestBody unionVo unionVo) {
@@ -155,35 +155,38 @@ public class AdminController {
 	/* ＃＃＃＃＃＃＃＃＃＃＃＃＃ 상품 상세 등록에서 옵션 리스트 ＃＃＃＃＃＃＃＃＃＃＃＃＃ */
 	/* 색상 가져오기 */
 	@GetMapping("/api/color/{seriesNum}/{productNum}")
-	public JsonResult getColorList(@PathVariable("seriesNum") int seriesNum, @PathVariable("productNum") int productNum) {
-	    System.out.println("AdminController.getColorList()");
+	public JsonResult getColorList(@PathVariable("seriesNum") int seriesNum,
+			@PathVariable("productNum") int productNum) {
+		System.out.println("AdminController.getColorList()");
 
-	    // 서비스 레이어에서 seriesNum과 productNum을 넘겨줌
-	    List<unionVo> colorList = adminService.exeGetColorList(seriesNum, productNum);
+		// 서비스 레이어에서 seriesNum과 productNum을 넘겨줌
+		List<unionVo> colorList = adminService.exeGetColorList(seriesNum, productNum);
 
-	    return JsonResult.success(colorList);
+		return JsonResult.success(colorList);
 	}
 
 	/* 디스플레이 가져오기 */
 	@GetMapping("/api/display/{seriesNum}/{productNum}")
-	public JsonResult getDisplayList(@PathVariable("seriesNum") int seriesNum, @PathVariable("productNum") int productNum) {
-	    System.out.println("AdminController.getDisplayList()");
+	public JsonResult getDisplayList(@PathVariable("seriesNum") int seriesNum,
+			@PathVariable("productNum") int productNum) {
+		System.out.println("AdminController.getDisplayList()");
 
-	    // 서비스 레이어에서 seriesNum과 productNum을 넘겨줌
-	    List<unionVo> displayList = adminService.exeGetDisplayList(seriesNum, productNum);
+		// 서비스 레이어에서 seriesNum과 productNum을 넘겨줌
+		List<unionVo> displayList = adminService.exeGetDisplayList(seriesNum, productNum);
 
-	    return JsonResult.success(displayList);
+		return JsonResult.success(displayList);
 	}
 
 	/* 용량 가져오기 */
 	@GetMapping("/api/storage/{seriesNum}/{productNum}")
-	public JsonResult getStorageList(@PathVariable("seriesNum") int seriesNum, @PathVariable("productNum") int productNum) {
-	    System.out.println("AdminController.getStorageList()");
+	public JsonResult getStorageList(@PathVariable("seriesNum") int seriesNum,
+			@PathVariable("productNum") int productNum) {
+		System.out.println("AdminController.getStorageList()");
 
-	    // 서비스 레이어에서 seriesNum과 productNum을 넘겨줌
-	    List<unionVo> storageList = adminService.exeGetStorageList(seriesNum, productNum);
+		// 서비스 레이어에서 seriesNum과 productNum을 넘겨줌
+		List<unionVo> storageList = adminService.exeGetStorageList(seriesNum, productNum);
 
-	    return JsonResult.success(storageList);
+		return JsonResult.success(storageList);
 	}
 
 	/* 시리즈번호로 색상 상세정보 가져오기 */
@@ -222,7 +225,7 @@ public class AdminController {
 	public JsonResult getProductDetail(@PathVariable("seriesNum") int seriesNum) {
 		System.out.println("AdminController.getProductDetail()");
 
-		List<unionVo> productDetailList = adminService.exeGetProductDetail(seriesNum);
+		List<ProductDetailVo> productDetailList = adminService.exeGetProductDetail(seriesNum);
 
 		return JsonResult.success(productDetailList);
 	}
@@ -376,11 +379,29 @@ public class AdminController {
 	}
 
 	/* 상품 리스트 모두 가져오기 */
-	@GetMapping("/api/productList")
-	public JsonResult getProductListAll() {
-		System.out.println("AdminController.getProductListAll()");
+//	@GetMapping("/api/productList")
+//	public JsonResult getProductListAll() {
+//		System.out.println("AdminController.getProductListAll()");
+//
+//		List<ProductDetailVo> productListAll = adminService.exeGetProductListAll();
+//
+//		return JsonResult.success(productListAll);
+//	}
 
-		List<ProductDetailVo> productListAll = adminService.exeGetProductListAll();
+	@GetMapping("/api/productList")
+	public JsonResult getProductListAll(@RequestParam(value = "keyword", required = false) String keyword) {
+		System.out.println("AdminController.getProductListAll() - 검색어: " + keyword);
+
+		// 키워드가 없으면 전체 목록을 반환하고, 키워드가 있으면 필터링하여 반환
+		List<ProductDetailVo> productListAll;
+
+		if (keyword == null || keyword.isEmpty()) {
+			// 키워드가 없을 경우 모든 제품 리스트 반환
+			productListAll = adminService.exeGetProductListAll();
+		} else {
+			// 키워드가 있을 경우 필터링된 리스트 반환
+			productListAll = adminService.searchProductListByKeyword(keyword);
+		}
 
 		return JsonResult.success(productListAll);
 	}
@@ -453,7 +474,7 @@ public class AdminController {
 			return JsonResult.fail("데이터 없음");
 		}
 	}
-	
+
 	/* 회원 1명 정보 가져오기 */
 	@GetMapping("/api/modify/user/{userNum}")
 	public JsonResult getUserSelectOne(@PathVariable(value = "userNum") int userNum) {
@@ -463,7 +484,7 @@ public class AdminController {
 
 		return JsonResult.success(userList);
 	}
-	
+
 	/* 회원정보 수정하기 */
 	@PutMapping("/api/update/user/{userNum}")
 	public JsonResult modifyUser(@RequestBody unionVo unionVo) {
@@ -474,6 +495,63 @@ public class AdminController {
 			return JsonResult.success(count); // 성공 시
 		} else {
 			return JsonResult.fail("매장 수정 실패"); // 실패 시
+		}
+	}
+
+	/* 선택한 상품 상세정보 1개 가져오기 */
+	@GetMapping("/api/select/productDetail/{productDetailNum}")
+	public JsonResult selectOneProductDetail(@PathVariable(value = "productDetailNum") int productDetailNum) {
+		System.out.println("@@@@@@@@@@@@");
+		System.out.println(productDetailNum);
+
+		ProductDetailVo productDetailVo = adminService.exeSelectOneProductDetail(productDetailNum);
+
+		if (productDetailVo != null) {
+			return JsonResult.success(productDetailVo);
+		} else {
+			return JsonResult.fail("데이터 없음");
+		}
+	}
+
+	/* 선택한 상품의 상세 이미지 가져오기 */
+	@GetMapping("/api/select/productDetailImg/{productDetailNum}")
+	public JsonResult selectOneProductDetailImg(@PathVariable(value = "productDetailNum") int productDetailNum) {
+		System.out.println("@@@@@@@@@@@@");
+		System.out.println(productDetailNum);
+
+		List<ProductDetailVo> productDetailList = adminService.exeProductDetailImg(productDetailNum);
+
+		if (productDetailList != null) {
+			return JsonResult.success(productDetailList);
+		} else {
+			return JsonResult.fail("데이터 없음");
+		}
+	}
+
+	/* 상품상세 정보 수정하기 */
+	@PutMapping("/api/update/productDetail/{productDetailNum}")
+	public JsonResult modifyProductDetail(@PathVariable("productDetailNum") int productDetailNum,
+			@RequestParam("seriesName") String seriesName, @RequestParam("productName") String productName,
+			@RequestParam("colorName") String colorName, @RequestParam("colorCode") String colorCode,
+			@RequestParam("displaySize") String displaySize, @RequestParam("storageSize") String storageSize,
+			@RequestParam("productPrice") int productPrice, @RequestParam("imageSavedName") List<MultipartFile> files) {
+
+		ProductDetailVo productDetailVo = new ProductDetailVo();
+		productDetailVo.setProductDetailNum(productDetailNum);
+		productDetailVo.setSeriesName(seriesName);
+		productDetailVo.setProductName(productName);
+		productDetailVo.setColorName(colorName);
+		productDetailVo.setColorCode(colorCode);
+		productDetailVo.setDisplaySize(displaySize);
+		productDetailVo.setStorageSize(storageSize);
+		productDetailVo.setProductPrice(productPrice);
+
+		int count = adminService.exeModifyDetailWithImages(productDetailVo, files);
+
+		if (count != -1) {
+			return JsonResult.success(count);
+		} else {
+			return JsonResult.fail("상품 수정 실패");
 		}
 	}
 

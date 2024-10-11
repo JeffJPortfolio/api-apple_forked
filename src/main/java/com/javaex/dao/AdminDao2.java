@@ -1,6 +1,7 @@
 package com.javaex.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,6 +84,24 @@ public class AdminDao2 {
 		StoreVo storeVo = sqlSession.selectOne("admin.storeSelectOne", storeNum);
 
 		return storeVo;
+	}
+	
+	//--2024/10
+	public List<StoreVo> getStoreList2(Map<String, Object> limitMap) {
+		System.out.println("AdminDao.selectList()");
+
+		List<StoreVo> storeVoList = sqlSession.selectList("admin.getStoreList2", limitMap);
+
+		return storeVoList;
+	}
+
+	/* 데이터 전체 갯수 구하기(검색O) */
+	public int selectTotalCntKeyword(String keyword) {
+		System.out.println("TboardDao.selectTotalCntKeyword()");
+
+		int totalCnt = sqlSession.selectOne("admin.selectTotalCntKeyword", keyword);
+		System.out.println(totalCnt);
+		return totalCnt;
 	}
 
 }

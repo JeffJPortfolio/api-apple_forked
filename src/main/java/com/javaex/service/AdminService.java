@@ -4,6 +4,7 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -38,8 +39,8 @@ public class AdminService {
 		// 파일 저장 경로 설정
 		String saveDir;
 		String osName = System.getProperty("os.name").toLowerCase();
-		if (osName.contains("linux")) {
-			saveDir = "/app/upload";
+		if (osName.contains("mac")) {
+			saveDir = "/Users/yuchan/Desktop";
 		} else {
 			saveDir = "C:\\javaStudy\\upload";
 		}
@@ -174,44 +175,44 @@ public class AdminService {
 
 	/* 색상 가져오기 */
 	public List<unionVo> exeGetColorList(int seriesNum, int productNum) {
-	    System.out.println("AdminService.exeGetColorList()");
+		System.out.println("AdminService.exeGetColorList()");
 
-	    // unionVo 객체에 seriesNum과 productNum을 담아 DAO로 전달
-	    unionVo unionVo = new unionVo();
-	    unionVo.setSeriesNum(seriesNum);
-	    unionVo.setProductNum(productNum);
+		// unionVo 객체에 seriesNum과 productNum을 담아 DAO로 전달
+		unionVo unionVo = new unionVo();
+		unionVo.setSeriesNum(seriesNum);
+		unionVo.setProductNum(productNum);
 
-	    List<unionVo> colorList = adminDao.getColorList(unionVo);
+		List<unionVo> colorList = adminDao.getColorList(unionVo);
 
-	    return colorList;
+		return colorList;
 	}
 
 	/* 디스플레이 가져오기 */
 	public List<unionVo> exeGetDisplayList(int seriesNum, int productNum) {
-	    System.out.println("AdminService.exeGetDisplayList()");
+		System.out.println("AdminService.exeGetDisplayList()");
 
-	    // unionVo 객체에 seriesNum과 productNum을 담아 DAO로 전달
-	    unionVo unionVo = new unionVo();
-	    unionVo.setSeriesNum(seriesNum);
-	    unionVo.setProductNum(productNum);
+		// unionVo 객체에 seriesNum과 productNum을 담아 DAO로 전달
+		unionVo unionVo = new unionVo();
+		unionVo.setSeriesNum(seriesNum);
+		unionVo.setProductNum(productNum);
 
-	    List<unionVo> displayList = adminDao.getDisplayList(unionVo);
+		List<unionVo> displayList = adminDao.getDisplayList(unionVo);
 
-	    return displayList;
+		return displayList;
 	}
 
 	/* 용량 가져오기 */
 	public List<unionVo> exeGetStorageList(int seriesNum, int productNum) {
-	    System.out.println("AdminService.exeGetStorageList()");
+		System.out.println("AdminService.exeGetStorageList()");
 
-	    // unionVo 객체에 seriesNum과 productNum을 담아 DAO로 전달
-	    unionVo unionVo = new unionVo();
-	    unionVo.setSeriesNum(seriesNum);
-	    unionVo.setProductNum(productNum);
+		// unionVo 객체에 seriesNum과 productNum을 담아 DAO로 전달
+		unionVo unionVo = new unionVo();
+		unionVo.setSeriesNum(seriesNum);
+		unionVo.setProductNum(productNum);
 
-	    List<unionVo> storageList = adminDao.getStorageList(unionVo);
+		List<unionVo> storageList = adminDao.getStorageList(unionVo);
 
-	    return storageList;
+		return storageList;
 	}
 
 	/* 상품 가져오기2 */
@@ -251,10 +252,10 @@ public class AdminService {
 	}
 
 	/* 상품상세 정보 가져오기 */
-	public List<unionVo> exeGetProductDetail(int seriesNum) {
+	public List<ProductDetailVo> exeGetProductDetail(int seriesNum) {
 		System.out.println("AdminService.exeGetProductDetail()");
 
-		List<unionVo> productDetailList = adminDao.getProductDetail(seriesNum);
+		List<ProductDetailVo> productDetailList = adminDao.getProductDetail(seriesNum);
 
 		return productDetailList;
 	}
@@ -385,12 +386,24 @@ public class AdminService {
 	}
 
 	/* 상품 리스트 모두 가져오기 */
-	public List<ProductDetailVo> exeGetProductListAll() {
-		System.out.println("AdminService.exeGetProductListAll()");
+//	public List<ProductDetailVo> exeGetProductListAll() {
+//		System.out.println("AdminService.exeGetProductListAll()");
+//
+//		List<ProductDetailVo> productListAll = adminDao.getProductListAll();
+//		return productListAll;
+//	}
+	
+	// 전체 상품 목록 반환 메소드
+    public List<ProductDetailVo> exeGetProductListAll() {
+        System.out.println("AdminService.exeGetProductListAll()");
+        return adminDao.getProductListAll();  // Dao에서 전체 목록을 가져옴
+    }
 
-		List<ProductDetailVo> productListAll = adminDao.getProductListAll();
-		return productListAll;
-	}
+    // 키워드로 필터링된 상품 목록 반환 메소드
+    public List<ProductDetailVo> searchProductListByKeyword(String keyword) {
+        System.out.println("AdminService.searchProductListByKeyword() - 검색어: " + keyword);
+        return adminDao.searchProductListByKeyword(keyword);  // Dao에서 필터링된 목록을 가져옴
+    }
 
 	/* 상품 리스트에서 상품디테일번호 확인하고 삭제하기 */
 	// History 테이블에서 productDetailNum이 있는지 확인
@@ -457,7 +470,7 @@ public class AdminService {
 
 		return userList;
 	}
-	
+
 	/* 회원 1명 정보 가져오기 */
 	public unionVo getStoreSelectOne(int userNum) {
 		System.out.println("AdminService.getUserSelectOne()");
@@ -466,12 +479,59 @@ public class AdminService {
 
 		return userList;
 	}
-	
+
 	/* 회원정보 수정하기 */
 	public int exeModifyUser(unionVo unionVo) {
 		System.out.println("AdminService.exeModifyUser()");
 		int count = adminDao.modifyUser(unionVo);
-		
+
 		return count;
 	}
+
+	/* 선택한 상세정보 1개 가져오기 */
+	public ProductDetailVo exeSelectOneProductDetail(int productDetailNum) {
+		System.out.println("AdminService.exeSelectOneProductDetail()");
+
+		ProductDetailVo productDetailVo = adminDao.selectOneProductDetail(productDetailNum);
+
+		return productDetailVo;
+	}
+
+	/* 선택한 상품의 상세 이미지 가져오기 */
+	public List<ProductDetailVo> exeProductDetailImg(int productDetailNum) {
+		System.out.println("AdminService.exeSelectOneProductDetailImg()");
+
+		List<ProductDetailVo> productDetailList = adminDao.productDetailImg(productDetailNum);
+
+		return productDetailList;
+	}
+
+	/* 상품상세 정보 수정하기 */
+	public int exeModifyDetailWithImages(ProductDetailVo productDetailVo, List<MultipartFile> files) {
+		List<String> savedFileNames = new ArrayList<>();
+
+		List<Integer> imagePrimaryList = productDetailVo.getImagePrimaryList();
+
+		for (int i = 0; i < files.size(); i++) {
+			MultipartFile file = files.get(i);
+			if (!file.isEmpty()) {
+				String savedFileName = exeUpload(file);
+				if (savedFileName != null) {
+					savedFileNames.add(savedFileName);
+
+					if (imagePrimaryList != null && i < imagePrimaryList.size()) {
+						adminDao.updateProductImage(imagePrimaryList.get(i), savedFileName);
+					} else {
+						adminDao.insertProductImage(productDetailVo.getProductDetailNum(), savedFileName, i);
+					}
+				} else {
+					return -1;
+				}
+			}
+		}
+
+		adminDao.updateProductDetail(productDetailVo);
+		return 1;
+	}
+
 }

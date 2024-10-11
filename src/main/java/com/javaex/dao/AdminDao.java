@@ -1,6 +1,8 @@
 package com.javaex.dao;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -165,10 +167,10 @@ public class AdminDao {
 	}
 
 	/* 시리즈 번호로 상품 상세정보 가져오기 */
-	public List<unionVo> getProductDetail(int seriesNum) {
+	public List<ProductDetailVo> getProductDetail(int seriesNum) {
 		System.out.println("AdminService.getProductDetail()");
 
-		List<unionVo> productDetailList = sqlSession.selectList("admin.selectProductDetailList", seriesNum);
+		List<ProductDetailVo> productDetailList = sqlSession.selectList("admin.selectProductDetailList", seriesNum);
 
 		return productDetailList;
 	}
@@ -282,13 +284,25 @@ public class AdminDao {
 	}
 
 	/* 상품 리스트 모두 가져오기 */
-	public List<ProductDetailVo> getProductListAll() {
-		System.out.println("AdminService.getProductListAll()");
+//	public List<ProductDetailVo> getProductListAll() {
+//		System.out.println("AdminService.getProductListAll()");
+//
+//		List<ProductDetailVo> productListAll = sqlSession.selectList("admin.selectProductListAll");
+//
+//		return productListAll;
+//	}
+	
+	// 전체 상품 목록 가져오기
+    public List<ProductDetailVo> getProductListAll() {
+        System.out.println("AdminDao.getProductListAll()");
+        return sqlSession.selectList("admin.selectProductListAll");  // Mapper에서 전체 상품 목록을 가져옴
+    }
 
-		List<ProductDetailVo> productListAll = sqlSession.selectList("admin.selectProductListAll");
-
-		return productListAll;
-	}
+    // 키워드 기반으로 필터링된 상품 목록 가져오기
+    public List<ProductDetailVo> searchProductListByKeyword(String keyword) {
+        System.out.println("AdminDao.searchProductListByKeyword() - 키워드: " + keyword);
+        return sqlSession.selectList("admin.productListByKeyword", keyword);  // Mapper에서 필터링된 상품 목록을 가져옴
+    }
 
 	// History 테이블에서 productDetailNum이 있는지 확인
 	public int existsInHistory(int productDetailNum) {
@@ -359,6 +373,46 @@ public class AdminDao {
 		int count = sqlSession.update("admin.updateUser", unionVo);
 
 		return count;
+	}
+
+	/* 선택한 상세정보 1개 가져오기 */
+	public ProductDetailVo selectOneProductDetail(int productDetailNum) {
+		System.out.println("AdminDao.selectOneProductDetail()");
+
+		ProductDetailVo productDetailVo = sqlSession.selectOne("admin.selectOneProductDetail", productDetailNum);
+
+		return productDetailVo;
+	}
+
+	/* 선택한 상품의 상세 이미지 가져오기 */
+	public List<ProductDetailVo> productDetailImg(int productDetailNum) {
+		System.out.println("AdminDao.productDetailImg()");
+
+		List<ProductDetailVo> productDetailList = sqlSession.selectList("admin.productDetailImg", productDetailNum);
+
+		return productDetailList;
+	}
+
+	/* 상품상세 정보 수정 */
+	public int updateProductDetail(ProductDetailVo productDetailVo) {
+		return sqlSession.update("admin.updateProductDetail", productDetailVo);
+	}
+
+	/* 기존 상품 이미지 수정 */
+	public int updateProductImage(int imagePrimary, String savedFileName) {
+		Map<String, Object> paramMap = new HashMap<>();
+		paramMap.put("imagePrimary", imagePrimary);
+		paramMap.put("savedFileName", savedFileName);
+		return sqlSession.update("admin.updateProductImage", paramMap);
+	}
+
+	/* 상품디테일 이미지 추가 */
+	public int insertProductImage(int productDetailNum, String savedFileName, int imagePrimary) {
+		Map<String, Object> paramMap = new HashMap<>();
+		paramMap.put("productDetailNum", productDetailNum);
+		paramMap.put("savedFileName", savedFileName);
+		paramMap.put("imagePrimary", imagePrimary);
+		return sqlSession.insert("admin.insertProductImage", paramMap);
 	}
 
 }

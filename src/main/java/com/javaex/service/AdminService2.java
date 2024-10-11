@@ -1,6 +1,8 @@
 package com.javaex.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -83,4 +85,42 @@ public class AdminService2 {
 
 		return storeVo;
 	}
+	
+	//-----------2024/10/11
+	public Map<String, Object> exeGetStoreList2(int crtPage, String keyword) {
+	    int listCnt = 2;
+	    crtPage = (crtPage > 0) ? crtPage : 1;
+
+	    int StartRowNo = (crtPage - 1) * listCnt;
+
+	    Map<String, Object> limitMap = new HashMap<>();
+	    limitMap.put("StartRowNo", StartRowNo);
+	    limitMap.put("listCnt", listCnt);
+	    limitMap.put("keyword", keyword);
+
+	    List<StoreVo> storeVoList = adminDao2.getStoreList2(limitMap);
+
+	    int pageBtnCount = 10;
+	    int totalCnt = adminDao2.selectTotalCntKeyword(keyword);
+
+	    int endPageBtnNo = (int) Math.ceil((crtPage / (double) pageBtnCount)) * pageBtnCount;
+	    int startPageBtnNo = (endPageBtnNo - pageBtnCount) + 1;
+
+	    boolean next = listCnt * endPageBtnNo < totalCnt;
+	    if (!next) {
+	        endPageBtnNo = (int) Math.ceil(totalCnt / (double) listCnt);
+	    }
+
+	    boolean prev = startPageBtnNo != 1;
+
+	    Map<String, Object> pMap = new HashMap<>();
+	    pMap.put("storeVoList", storeVoList);
+	    pMap.put("prev", prev);
+	    pMap.put("startPageBtnNo", startPageBtnNo);
+	    pMap.put("endPageBtnNo", endPageBtnNo);
+	    pMap.put("next", next);
+
+	    return pMap;
+	}
+
 }
